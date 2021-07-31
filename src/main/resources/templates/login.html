@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:utext="#{welcome}"></title>
+</head>
+<body>
+<div style="text-align: right;padding:5px;margin:5px 0px;background:#ccc;">
+  <a th:href="@{/login?lang=en_US}">ENG</a>
+  &nbsp;|&nbsp;
+  <a th:href="@{/login?lang=ua_UA}">UKR</a>
+</div>
+<form method="post" action="">
+  <table>
+    <tr>
+      <td>
+        <strong th:utext="#{user.name}"></strong>
+      </td>
+      <td><input name="userName" /></td>
+    </tr>
+    <tr>
+      <td>
+        <strong  th:utext="#{password}"></strong>
+      </td>
+      <td><input name="password" /></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="submit" th:value="#{login}" />
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

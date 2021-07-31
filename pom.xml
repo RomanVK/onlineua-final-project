@@ -55,6 +55,10 @@
       <artifactId>spring-context</artifactId>
       <!--<version>5.1.7.RELEASE</version>-->
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <finalName>onlineua-final-project</finalName>
