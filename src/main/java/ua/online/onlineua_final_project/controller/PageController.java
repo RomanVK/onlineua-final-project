@@ -6,8 +6,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class PageController {
-    @RequestMapping(value = {"/", "login"})
-    public String staticResource(Model model){
+
+    @RequestMapping(value = {"/", "/welcome"})
+    public String mainPage(Model model) {
+        return "welcome";
+    }
+
+    @RequestMapping(value = {"login"})
+    public String loginForm(Model model){
         return "login";
     }
 }
