@@ -9,9 +9,11 @@ angular.module("login_form",[])
                 headers: { "Content-Type" : "application/x-www-form-urlencoded" }
             }).then(
                 function(data) {
+                    // TODO do i18n
                     window.alert("Доступ разрешен");
                 },
                 function(error) {
+                    // TODO do i18n
                     window.alert("Доступ запрещен");
                 }
             );
