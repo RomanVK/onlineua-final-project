@@ -16,4 +16,10 @@ public class PageController {
     public String loginForm(Model model){
         return "login";
     }
+
+    @RequestMapping(value = {"registration_form"})
+    public String registrationForm(Model model){
+        return "registration_form";
+    }
+
 }
