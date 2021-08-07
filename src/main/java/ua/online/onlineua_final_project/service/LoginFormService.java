@@ -19,18 +19,12 @@ public class LoginFormService {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> findUserByEmail (UserDTO userDTO){
-        return userRepository.findUserByEmail(userDTO.getEmail());
+    public User findUserByEmail (UserDTO userDTO){
+        return userRepository.findUserByEmail(userDTO.getEmail())
+                .orElseThrow(() -> new IllegalStateException("Email not found"));
     }
 
-    public void saveNewUser (User user){
-        try {
-            userRepository.save(user);
-        } catch (Exception ex){
-            log.info("{Почтовый адрес уже существует}");
-        }
 
-    }
 
     public String inputUser(UserDTO name) {
         return "";
