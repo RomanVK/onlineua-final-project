@@ -53,11 +53,8 @@
                required
                ng-model="auth.password">
         </div>
-        <input type="submit"
-               th:value="#{login}"
-               class="btn btn-default"
-               style="margin-top:30px"
-               ng-disabled="form.$invalid" />
+        <button type="submit" class="btn btn-success" style="margin-top:30px" ng-disabled="form.$invalid" th:text="#{login}">
+        </button>
       </form>
     </div>
   </div>
