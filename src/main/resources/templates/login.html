@@ -24,13 +24,7 @@
       <h2 class="page-header">
         <strong th:utext="#{login}"></strong>
       </h2>
-      <form style="margin-bottom: 30px"
-            method="post"
-            action=""
-            name="form"
-            autocomplete="off"
-            novalidate
-            ng-submit="form.$valid && sendForm(auth)">
+      <form style="margin-bottom: 30px" name="form" autocomplete="off" novalidate ng-submit="form.$valid && sendForm(auth)">
         <div class="form-group">
           <label for="exampleInputEmail1">
               <strong th:utext="#{email}"></strong>
