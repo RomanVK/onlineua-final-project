@@ -22,4 +22,18 @@ public class PageController {
         return "registration_form";
     }
 
+    @RequestMapping(value = {"catalog"})
+    public String catalog(Model model){
+        return "catalog";
+    }
+
+    @RequestMapping(value = {"orders"})
+    public String orders(Model model){
+        return "orders";
+    }
+
+    @RequestMapping(value = {"admin"})
+    public String admin(Model model){
+        return "admin";
+    }
 }
