@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:utext="#{profile}"></title>
+    <title th:utext="#{admin}"></title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -12,17 +12,17 @@
 </head>
 <body>
 <div style="text-align: right;padding:5px;margin:5px 0px;background:#ccc;">
-    <a th:href="@{/welcome?lang=en_US}">ENG</a>
+    <a th:href="@{/admin/admin?lang=en_US}">ENG</a>
     &nbsp;|&nbsp;
-    <a th:href="@{/welcome?lang=ua_UA}">UKR</a>
+    <a th:href="@{/admin/admin?lang=ua_UA}">UKR</a>
 </div>
 <div class="container" style="margin-top: 60px">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h2 class="page-header">
-                <strong th:utext="#{profile}"></strong>
+                <strong th:utext="#{admin}"></strong>
             </h2>
-            <p th:utext="#{profile}" />
+            <p th:utext="#{admin}" />
 
         </div>
     </div>
