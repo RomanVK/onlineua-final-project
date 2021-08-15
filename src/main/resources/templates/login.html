@@ -1,58 +1,55 @@
-<!DOCTYPE HTML>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title th:utext="#{login}"></title>
-  <link rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
-  <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+  <title  th:utext="#{login}">Log in</title>
 </head>
-<body ng-app="login_form" ng-controller="AppCtrl">
-<div style="text-align: right;padding:5px;margin:5px 0px;background:#ccc;">
-  <a th:href="@{/login?lang=en_US}">ENG</a>
-  &nbsp;|&nbsp;
-  <a th:href="@{/login?lang=ua_UA}">UKR</a>
-</div>
-<div class="container" style="margin-top: 60px">
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      <h2 class="page-header">
-        <strong th:utext="#{login}"></strong>
-      </h2>
-      <form style="margin-bottom: 30px" name="form" autocomplete="off" novalidate ng-submit="form.$valid && sendForm(auth)">
-        <div class="form-group">
-          <label for="exampleInputEmail1">
-              <strong th:utext="#{email}"></strong>
-          </label>
-          <input type="email"
-                 class="form-control"
-                 id="exampleInputEmail1"
-                 placeholder=""
-                 required
-                 ng-model="auth.email">
-        </div>
-        <div class="form-group">
-        <label for="exampleInputPassword1">
-          <strong  th:utext="#{password}"></strong>
-        </label>
-        <input type="password"
-               class="form-control"
-               id="exampleInputPassword1"
-               placeholder=""
-               required
-               ng-model="auth.password">
-        </div>
-        <button type="submit" class="btn btn-success" style="margin-top:30px" ng-disabled="form.$invalid" th:text="#{login}">
-        </button>
-      </form>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<div class="container">
+  <div style="width:600px;margin-left: auto;margin-right: auto;margin-top:24px;padding: 24px;">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-user" th:utext="#{please.login}">Please Login</i>
+      </div>
+      <div class="card-block" style="padding: 24px;">
+        <form name="f" th:action="@{/signin}" method="post">
+          <fieldset>
+            <!-- Thymeleaf + Spring Security error display -->
+            <div th:if="${param.error}" class="alert alert-danger">
+              Invalid username and password.
+            </div>
+
+            <div th:if="${param.logout}" class="alert alert-success">
+              You have been logged out.
+            </div>
+
+            <!-- Login Controls -->
+            <div class="form-group">
+              <label for="email" th:utext="#{email}">Email</label>
+              <input type="text" class="form-control" id="email" name="email"
+                     placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="password" th:utext="#{password}">Password</label>
+              <input type="password" class="form-control" id="password" name="password"
+                     placeholder="">
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="checkRememberMe" name="checkRememberMe">
+              <label class="form-check-label" for="checkRememberMe" th:text="#{remember.me}">Remember me?</label>
+            </div>
+
+            <!-- Login Button -->
+            <div class="form-actions" style="margin-top: 12px;">
+              <button type="submit" class="btn btn-success" th:text="#{login}">Log in</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
     </div>
   </div>
 </div>
-<script type="text/javascript" src="/js/login_form.js"></script>
 </body>
 </html>
