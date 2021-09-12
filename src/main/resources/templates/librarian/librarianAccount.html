@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:with="lang=${#locale.language}" th:lang="${lang}">
 <head th:insert="fragments.html :: headerfiles">
-    <title th:utext="#{orders}">Orders</title>
+    <title th:utext="#{librarian}">librarianAccount</title>
 </head>
 <body>
 <header th:insert="fragments.html :: nav"></header>
@@ -14,7 +14,7 @@
                 <tr>
                     <td>
                         <h2 class="page-header">
-                            <strong th:utext="#{orders}">Orders</strong>
+                            <strong th:utext="#{librarian}">librarianAccount</strong>
                         </h2>
                     </td>
                 </tr>

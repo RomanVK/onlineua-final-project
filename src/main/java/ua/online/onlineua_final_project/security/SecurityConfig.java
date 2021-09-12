@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(UserPrincipalDetailsService userPrincipalDetailsService) {
         this.userPrincipalDetailsService = userPrincipalDetailsService;
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
@@ -29,12 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
-            .antMatchers("/", "/welcome", "/login", "/registration_form").permitAll()
-            .antMatchers("/catalog", "/profile/**").authenticated()
-            .antMatchers("/orders/**").hasAnyRole("ADMIN", "LIBRARIAN")
-            .antMatchers("/admin/**").hasRole("ADMIN")
-            .and()
+                .authorizeRequests()
+                .antMatchers("/", "/welcome", "/login", "/registration_form").permitAll()
+                .antMatchers("/user/catalog").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/user/userAccount").hasAnyRole("LIBRARIAN", "USER")
+                .antMatchers("/user/**").hasRole("USER")
+                .antMatchers("/librarian/**").hasRole("LIBRARIAN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .and()
                 .formLogin()
                 .loginProcessingUrl("/signin")
                 .loginPage("/login").permitAll()
@@ -47,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    DaoAuthenticationProvider authenticationProvider(){
+    DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(this.userPrincipalDetailsService);
@@ -55,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

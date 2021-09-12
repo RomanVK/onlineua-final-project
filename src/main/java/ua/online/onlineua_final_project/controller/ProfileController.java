@@ -9,8 +9,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("profile")
 public class ProfileController {
 
-    @GetMapping("profile")
-    public String profile(Model model) {
-        return "profile/profile";
-    }
 }

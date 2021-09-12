@@ -9,9 +9,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("librarian")
 public class LibrarianController {
 
-    @GetMapping("orders")
-    public String orders(Model model){
-        return "librarian/orders";
-    }
-
 }
