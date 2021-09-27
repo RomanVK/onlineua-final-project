@@ -1,25 +1,31 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:with="lang=${#locale.language}" th:lang="${lang}">
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+th:with="lang=${#locale.language}" th:lang="${lang}">
 <head th:insert="fragments.html :: headerfiles">
     <title th:utext="#{admin}">adminAccount</title>
 </head>
 <body>
 <header th:insert="fragments.html :: nav"></header>
+<h2 class="page-header">
+    <strong th:utext="#{admin}">adminAccount</strong>
+</h2>
 <table>
-    <tr valign='top'>
+    <tr>
         <td>
-            <table>
-                <tr>
-                    <td>
-                        <h2 class="page-header">
-                            <strong th:utext="#{admin}">adminAccount</strong>
-                        </h2>
-                    </td>
-                </tr>
-                <tr>
-            </table>
+            <span th:insert="fragments.html :: loggedUserInfo"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/admin/librariansList}" th:utext="#{librarians}">Delete
+                Librarian</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/admin/showCreateLibrarian}" th:utext="#{librarians}">Create
+                Librarian</a>
         </td>
     </tr>
 </table>

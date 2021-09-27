@@ -1,0 +1,67 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+    <title th:utext="#{registration}">Create a new librarian</title>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<div class="container">
+    <div style="width:600px;margin-left: auto;margin-right: auto;margin-top:24px;padding: 24px;">
+        <div class="card">
+            <div th:if="${message}" class="alert alert-danger">
+                <p th:text="${message}">Message</p>
+            </div>
+            <div>
+                <p>CREATE LIBRARIAN</p>
+            </div>
+            <div class="card-header">
+<!--                TODO make a label-->
+                <i class="fa fa-user" th:utext="#{please.registration}">Please enter credentials of creating librarian</i>
+            </div>
+            <div class="card-block" style="padding: 24px;">
+                <form th:action="@{/admin/createLibrarian}" th:object="${librarian}" method="POST" enctype="utf8">
+                    <!-- Registration Controls -->
+                    <div class="form-group">
+                        <label th:text="#{first.name}">First name</label>
+                        <input th:field="*{firstName}"/>
+                        <p th:each="error: ${#fields.errors('firstName')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label th:text="#{last.name}">Last Name</label>
+                        <input th:field="*{lastName}"/>
+                        <p th:each="error : ${#fields.errors('lastName')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label th:text="#{email}">Email</label>
+                        <input type="email" th:field="*{email}"/>
+                        <p th:each="error : ${#fields.errors('email')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label th:text="#{password}">password</label>
+                        <input type="password" th:field="*{password}"/>
+                        <p th:each="error : ${#fields.errors('password')}"
+                           th:text="${error}">Validation error</p>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{confirm.password}">confirm</label>
+                        <input type="password" th:field="*{matchingPassword}"/>
+                    </div>
+
+                    <!-- Registration Button -->
+                    <div class="form-actions" style="margin-top: 12px;">
+                        <button type="submit" class="btn btn-success" th:text="#{submit}">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

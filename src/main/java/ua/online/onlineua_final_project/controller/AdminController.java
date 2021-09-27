@@ -1,12 +1,105 @@
 package ua.online.onlineua_final_project.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import ua.online.onlineua_final_project.dto.NoteDTO;
+import ua.online.onlineua_final_project.entity.User;
+import ua.online.onlineua_final_project.service.AdminService;
+import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
+
+@Slf4j
 @Controller
 @RequestMapping("admin")
 public class AdminController {
 
+    AdminService adminService;
+
+    @Autowired
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    @GetMapping(value = {"adminAccount"})
+    public ModelAndView adminAccount(Model model) {
+        ModelAndView mav = new ModelAndView("admin/adminAccount");
+
+        //make info about logged user
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails loggedUserPrincipal = ((UserDetails)principal);
+            log.info("Logged user is {}", loggedUserPrincipal);
+            String emailLoggedUser = loggedUserPrincipal.getUsername();
+            User loggedUser = adminService.getUserByEmail(emailLoggedUser);
+            mav.addObject("loggedUser",loggedUser);
+        } else {
+            mav.addObject("message", "The Logged user is unknown");
+        }
+        return mav;
+    }
+
+    @GetMapping(value = {"librariansList"})
+    public String librariansList(Model model) {
+        List<User> librarians = adminService.getAllLibrarians();
+        model.addAttribute("librarians", librarians);
+        return "admin/librariansList";
+    }
+
+    @GetMapping(value = {"deleteLibrarian"})
+    public ModelAndView deleteLibrarian(Model model, @RequestParam("id") long id) {
+        log.info("Deleting librarian account with id: {}", id);
+        ModelAndView mav;
+        try {
+            adminService.deleteLibrarian(id);
+            log.info("Librarian with id {} was deleted", id);
+            mav = new ModelAndView("admin/librariansList");
+            mav.addObject("message", "Librarian with id " + id + " was deleted");
+            List<User> librarians = adminService.getAllLibrarians();
+            mav.addObject("librarians", librarians);
+            return mav;
+        } catch (Exception ex) {
+            log.info("Something went a wrong way. Librarian with id {} wasn't deleted", id);
+            mav = new ModelAndView("admin/librariansList");
+            mav.addObject("message", "Something went a wrong way. Librarian with id " + id + " wasn't deleted");
+            return mav;
+        }
+    }
+
+    @GetMapping(value = {"showCreateLibrarian"})
+    public String showCreateLibrarian(Model model) {
+        model.addAttribute("librarian", new NoteDTO());
+        return "admin/showCreateLibrarian";
+    }
+
+    //    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = {"createLibrarian"})
+    public ModelAndView createLibrarian(@ModelAttribute("librarian") @Valid NoteDTO note,
+                                        HttpServletRequest request, Errors errors, Model model) {
+        log.info("Registering librarian account with information: {}", note);
+        ModelAndView mav;
+        try {
+            User librarian = adminService.createLibrarian(note);
+            log.info("Librarian with email {} was created", librarian.getEmail());
+            mav = new ModelAndView("admin/librariansList");
+            mav.addObject("message", "Librarian with email " + librarian.getEmail() + " was created");
+            List<User> librarians = adminService.getAllLibrarians();
+            mav.addObject("librarians", librarians);
+            return mav;
+        } catch (UserAlreadyExistException uaeEx) {
+            log.info("An account for that username/email already exists.{}", note);
+            mav = new ModelAndView("admin/showCreateLibrarian");
+            mav.addObject("message", "An account for that username/email already exists.");
+            return mav;
+        }
+    }
 }

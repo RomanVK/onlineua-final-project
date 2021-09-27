@@ -8,9 +8,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -30,17 +33,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/welcome", "/login", "/registration_form").permitAll()
-                .antMatchers("/user/catalog").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/user/userAccount").hasAnyRole("LIBRARIAN", "USER")
-                .antMatchers("/user/**").hasRole("USER")
-                .antMatchers("/librarian/**").hasRole("LIBRARIAN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/catalog").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("/user/userAccount").hasAnyAuthority("LIBRARIAN", "USER")
+                .antMatchers("/user/**").hasAnyAuthority("USER")
+                .antMatchers("/librarian/**").hasAnyAuthority("LIBRARIAN")
+                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/signin")
                 .loginPage("/login").permitAll()
+                .successHandler((request, response, authentication) -> {
+                    Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+                    if (roles.contains("ADMIN")) {
+                        response.sendRedirect("/admin/adminAccount");
+                    }
+                    if (roles.contains("LIBRARIAN")) {
+                        response.sendRedirect("/librarian/librarianAccount");
+                    }
+                    if (roles.contains("USER")) {
+                        response.sendRedirect("/user/userAccount" );
+                    }
+                })
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .and()
