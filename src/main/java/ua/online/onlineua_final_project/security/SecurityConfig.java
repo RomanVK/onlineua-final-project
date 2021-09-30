@@ -39,7 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/catalog").hasAnyAuthority("ADMIN", "USER")
                 .antMatchers("/user/userAccount").hasAnyAuthority("LIBRARIAN", "USER")
                 .antMatchers("/user/**").hasAnyAuthority("USER")
-                .antMatchers("/librarian/**").hasAnyAuthority("LIBRARIAN")
+                //TODO make better security for admin and librarian
+                //.antMatchers("/librarian/**").hasAnyAuthority("LIBRARIAN")
+                .antMatchers("/librarian/usersList").hasAnyAuthority("LIBRARIAN","ADMIN")
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
                 .and()
                 .formLogin()

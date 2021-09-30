@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+    <title th:utext="#{users.list}">Users List</title>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<table>
+    <tr valign='top'>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-header">
+                            <strong th:utext="#{users.list}">Users List</strong>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            Something wrong happened
+                        </div>
+                        <div th:if="${message}" class="alert alert-danger">
+                            <p th:text="${message}"></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table id="users">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Email</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th sec:authorize="hasAuthority('LIBRARIAN')">
+                        <span th:text="#{see.user.account}">See user account</span>
+                    </th>
+                    <th sec:authorize="hasAuthority('ADMIN')">
+                        <span th:text="#{lock.unlock}">Lock/ Unlock</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${users.isEmpty()}">
+                    <td colspan="2"> No users available</td>
+                </tr>
+                <tr th:each="user : ${users}">
+                    <td><span th:text="${user.id}"> id</span></td>
+                    <td><span th:text="${user.email}"> Email </span></td>
+                    <td><span th:text="${user.firstName}"> First name </span></td>
+                    <td><span th:text="${user.lastName}"> Last name </span></td>
+                    <td sec:authorize="hasAuthority('LIBRARIAN')">
+                        <a class="page-link" href="#" th:href="@{~/librarian/seeUserAccount(id=${user.id})}"
+                           th:utext="#{see}">See</a>
+                    </td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <p th:if="${user.nonLocked}">
+                            <a class="page-link" href="#" th:href="@{~/admin/lockUserAccount(id=${user.id})}"
+                               th:utext="#{lock}">Lock</a>
+                        </p>
+                        <p th:if="${not user.nonLocked}">
+                            <a class="page-link" href="#" th:href="@{~/admin/unlockUserAccount(id=${user.id})}"
+                               th:utext="#{unlock}">Unlock</a>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

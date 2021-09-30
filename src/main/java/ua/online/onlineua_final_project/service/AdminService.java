@@ -8,6 +8,7 @@ import ua.online.onlineua_final_project.dto.NoteDTO;
 import ua.online.onlineua_final_project.entity.RoleType;
 import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.repository.UserRepository;
+import ua.online.onlineua_final_project.web.error.NoEntityException;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
 import java.util.List;
@@ -46,7 +47,22 @@ public class AdminService {
                 .email(note.getEmail())
                 .role(RoleType.LIBRARIAN)
                 .password(passwordEncoder.encode(note.getPassword()))
+                .nonLocked(true)
                 .build());
+    }
+
+    public void lockUser(long id){
+        User lockUser = userRepository.findById(id).
+                orElseThrow(()->new NoEntityException("There is not user with id:" + id));
+        lockUser.setNonLocked(false);
+        userRepository.save(lockUser);
+    }
+
+    public void unlockUser(long id){
+        User unlockUser = userRepository.findById(id).
+                orElseThrow(()->new NoEntityException("There is not user with id:" + id));
+        unlockUser.setNonLocked(true);
+        userRepository.save(unlockUser);
     }
 
     private boolean emailExists(final String email) {

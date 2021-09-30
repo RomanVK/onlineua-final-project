@@ -35,6 +35,7 @@ public class RegFormService {
                 .email(note.getEmail())
                 .role(RoleType.USER)
                 .password(passwordEncoder.encode(note.getPassword()))
+                .nonLocked(true)
                 .build());
     }
 

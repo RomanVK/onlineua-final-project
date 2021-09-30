@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.online.onlineua_final_project.dto.NoteDTO;
 import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.service.AdminService;
+import ua.online.onlineua_final_project.service.LibrarianService;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +25,13 @@ import java.util.List;
 public class AdminController {
 
     AdminService adminService;
+    //TODO make separate method for preparing data for usersList
+    LibrarianService librarianService;
 
     @Autowired
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, LibrarianService librarianService) {
         this.adminService = adminService;
+        this.librarianService = librarianService;
     }
 
     @GetMapping(value = {"adminAccount"})
@@ -37,11 +41,11 @@ public class AdminController {
         //make info about logged user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
-            UserDetails loggedUserPrincipal = ((UserDetails)principal);
+            UserDetails loggedUserPrincipal = ((UserDetails) principal);
             log.info("Logged user is {}", loggedUserPrincipal);
             String emailLoggedUser = loggedUserPrincipal.getUsername();
             User loggedUser = adminService.getUserByEmail(emailLoggedUser);
-            mav.addObject("loggedUser",loggedUser);
+            mav.addObject("loggedUser", loggedUser);
         } else {
             mav.addObject("message", "The Logged user is unknown");
         }
@@ -102,4 +106,46 @@ public class AdminController {
             return mav;
         }
     }
+
+    //TODO make separated utility method for the same function from lock|unlockUserAccount
+    @GetMapping(value = "lockUserAccount")
+    public ModelAndView lockUser(Model model, @RequestParam("id") long id) {
+        log.info("Try to lock user account with id: {}", id);
+        ModelAndView mav = new ModelAndView("librarian/usersList");
+        try {
+            adminService.lockUser(id);
+            log.info("User account with id {} was locked", id);
+            mav.addObject("message", "User account with id " + id + " was locked");
+            List<User> users = librarianService.getAllUsers();
+            mav.addObject("users", users);
+            return mav;
+        } catch (Exception exception) {
+            log.info("Something went a wrong way. User account with id {} wasn't locked", id);
+            mav = new ModelAndView("librarian/usersList");
+            mav.addObject("message",
+                    "Something went a wrong way. User account with id " + id + " wasn't locked");
+            return mav;
+        }
+    }
+
+    @GetMapping(value = "unlockUserAccount")
+    public ModelAndView unlockUser(Model model, @RequestParam("id") long id){
+        log.info("Try to unlock user account with id: {}", id);
+        ModelAndView mav = new ModelAndView("librarian/usersList");
+        try {
+            adminService.unlockUser(id);
+            log.info("User account with id {} was unlocked", id);
+            mav.addObject("message", "User account with id " + id + " was unlocked");
+            List<User> users = librarianService.getAllUsers();
+            mav.addObject("users", users);
+            return mav;
+        } catch (Exception exception) {
+            log.info("Something went a wrong way. User account with id {} wasn't unlocked", id);
+            mav = new ModelAndView("librarian/usersList");
+            mav.addObject("message",
+                    "Something went a wrong way. User account with id " + id + " wasn't unlocked");
+            return mav;
+        }
+    }
+
 }

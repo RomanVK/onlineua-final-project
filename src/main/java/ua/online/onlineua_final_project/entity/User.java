@@ -30,4 +30,6 @@ public class User {
     private RoleType role;
     @Column(nullable = false)
     private String password;
+    @Column(name = "non_locked", nullable = false)
+    private boolean nonLocked;
 }

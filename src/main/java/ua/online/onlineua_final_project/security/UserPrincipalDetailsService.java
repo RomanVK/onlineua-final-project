@@ -32,7 +32,7 @@ public class UserPrincipalDetailsService implements UserDetailsService {
         boolean enabled = true;
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
+        boolean accountNonLocked = user.isNonLocked();
         List<String> roles = new ArrayList<>();
         roles.add(user.getRole().toString());
 
