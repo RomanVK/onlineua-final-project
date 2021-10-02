@@ -9,10 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.dto.NoteDTO;
+import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.service.AdminService;
+import ua.online.onlineua_final_project.service.BookService;
 import ua.online.onlineua_final_project.service.LibrarianService;
+import ua.online.onlineua_final_project.web.error.BookAlreadyExistException;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,11 +31,13 @@ public class AdminController {
     AdminService adminService;
     //TODO make separate method for preparing data for usersList
     LibrarianService librarianService;
+    BookService bookService;
 
     @Autowired
-    public AdminController(AdminService adminService, LibrarianService librarianService) {
+    public AdminController(AdminService adminService, LibrarianService librarianService, BookService bookService) {
         this.adminService = adminService;
         this.librarianService = librarianService;
+        this.bookService = bookService;
     }
 
     @GetMapping(value = {"adminAccount"})
@@ -129,7 +135,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "unlockUserAccount")
-    public ModelAndView unlockUser(Model model, @RequestParam("id") long id){
+    public ModelAndView unlockUser(Model model, @RequestParam("id") long id) {
         log.info("Try to unlock user account with id: {}", id);
         ModelAndView mav = new ModelAndView("librarian/usersList");
         try {
@@ -144,6 +150,34 @@ public class AdminController {
             mav = new ModelAndView("librarian/usersList");
             mav.addObject("message",
                     "Something went a wrong way. User account with id " + id + " wasn't unlocked");
+            return mav;
+        }
+    }
+
+    @GetMapping(value = "showCreateBook")
+    public String showCreateBook(Model model) {
+        model.addAttribute("book", new BookDTO());
+        return "admin/showCreateBook";
+    }
+
+    @PostMapping(value = {"createBook"})
+    public ModelAndView createBook(@ModelAttribute("book") @Valid BookDTO bookDTO,
+                                   HttpServletRequest request, Errors errors, Model model) {
+        log.info("Try to create the book with following data: {}", bookDTO);
+        ModelAndView mav;
+        try {
+            Book book = bookService.createBook(bookDTO);
+            log.info("Book with {} was created", book);
+            mav = new ModelAndView("bookCatalog/bookCatalog");
+            mav.addObject("message", "The Book with following data  " + book + " was created");
+            List<Book> books = bookService.getAllBooks();
+            mav.addObject("books", books);
+            return mav;
+        } catch (BookAlreadyExistException baeEx) {
+            log.info("The book with  ISBN: {} is already exists", bookDTO.getIsbn());
+            mav = new ModelAndView("admin/showCreateBook");
+            mav.addObject("message",
+                    "The book with  ISBN: " + bookDTO.getIsbn() + " is already exists");
             return mav;
         }
     }

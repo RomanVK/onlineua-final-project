@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+    <title th:utext="#{book.catalog}">Book catalog</title>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<table>
+    <tr valign='top'>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-header">
+                            <strong th:utext="#{book.catalog}">Book catalog</strong>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            Something wrong happened
+                        </div>
+                        <div th:if="${message}" class="alert alert-danger">
+                            <p th:text="${message}"></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table id="users" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Publishing date</th>
+                    <th>ISBN</th>
+                    <th>Quantity</th>
+                    <th sec:authorize="hasAuthority('ADMIN')">
+                        <span th:text="#{edit}">EDIT</span>
+                    </th>
+                    <th sec:authorize="hasAuthority('USER')">
+                        <span th:text="#{order}">ORDER</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${books.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <tr th:each="book : ${books}">
+                    <td><span th:text="${book.id}">id</span></td>
+                    <td><span th:text="${book.title}">title</span></td>
+                    <td><span th:text="${book.author}">author</span></td>
+                    <td><span th:text="${book.publisher}">publisher</span></td>
+                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${book.isbn}">isbn</span></td>
+                    <td><span th:text="${book.quantity}">quantity</span></td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <a class="page-link" href="#" th:href="@{~/admin/editBook(id=${book.id})}"
+                           th:utext="#{edit}">EDIT</a>
+                    </td>
+                    <td sec:authorize="hasAuthority('USER')">
+                        <a class="page-link" href="#" th:href="@{~/user/orderBook(id=${book.id})}"
+                           th:utext="#{order}">ORDER</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

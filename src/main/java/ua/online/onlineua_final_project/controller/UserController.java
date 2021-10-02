@@ -10,11 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("user")
 public class UserController {
 
-    @GetMapping(value = {"catalog"})
-    public ModelAndView catalog(Model model) {
-        return new ModelAndView("user/catalog");
-    }
-
     @GetMapping(value = {"userAccount"})
     public ModelAndView userAccount(Model model) {
         return new ModelAndView("user/userAccount");
