@@ -182,4 +182,23 @@ public class AdminController {
         }
     }
 
+    @GetMapping(value = {"deleteBook"})
+    public ModelAndView deleteBook(Model model, @RequestParam("id") long id) {
+        log.info("Try to delete Book with id: {}", id);
+        ModelAndView mav= new ModelAndView("bookCatalog/bookCatalog");
+        try {
+            adminService.deleteBook(id);
+            log.info("Book with id {} was deleted", id);
+            mav.addObject("message", "Book with id " + id + " was deleted");
+            List<Book> books = bookService.getAllBooks();
+            mav.addObject("books", books);
+            return mav;
+        } catch (Exception ex) {
+            log.info("Something went a wrong way. Book with id {} wasn't deleted", id);
+            mav.addObject("message",
+                    "Something went a wrong way. Book with id " + id + " wasn't deleted");
+            return mav;
+        }
+    }
+
 }

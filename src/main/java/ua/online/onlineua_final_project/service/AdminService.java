@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ua.online.onlineua_final_project.dto.NoteDTO;
 import ua.online.onlineua_final_project.entity.RoleType;
 import ua.online.onlineua_final_project.entity.User;
+import ua.online.onlineua_final_project.repository.BookRepository;
 import ua.online.onlineua_final_project.repository.UserRepository;
 import ua.online.onlineua_final_project.web.error.NoEntityException;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
@@ -18,11 +19,13 @@ import java.util.List;
 public class AdminService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private BookRepository bookRepository;
 
     @Autowired
-    public AdminService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminService(UserRepository userRepository, PasswordEncoder passwordEncoder, BookRepository bookRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.bookRepository = bookRepository;
     }
 
     public List<User> getAllLibrarians() {
@@ -63,6 +66,10 @@ public class AdminService {
                 orElseThrow(()->new NoEntityException("There is not user with id:" + id));
         unlockUser.setNonLocked(true);
         userRepository.save(unlockUser);
+    }
+
+    public void deleteBook(long id) {
+        bookRepository.deleteById(id);
     }
 
     private boolean emailExists(final String email) {
