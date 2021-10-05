@@ -7,6 +7,7 @@ import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.repository.BookRepository;
 import ua.online.onlineua_final_project.web.error.BookAlreadyExistException;
+import ua.online.onlineua_final_project.web.error.NoEntityException;
 
 import java.util.List;
 
@@ -40,6 +41,22 @@ public class BookService {
                 .isbn(bookDTO.getIsbn())
                 .quantity(bookDTO.getQuantity())
                 .build());
+    }
+
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id).orElseThrow(
+                () -> new NoEntityException("There is not a book with that id:" + id));
+    }
+
+    public void editBookById(long id, BookDTO bookDTO) {
+        Book selectedBook = getBookById(id);
+        selectedBook.setAuthor(bookDTO.getAuthor());
+        selectedBook.setIsbn(bookDTO.getIsbn());
+        selectedBook.setPublisher(bookDTO.getPublisher());
+        selectedBook.setQuantity(bookDTO.getQuantity());
+        selectedBook.setPublishingDate(bookDTO.getPublishingDate());
+        selectedBook.setTitle(bookDTO.getTitle());
+        bookRepository.save(selectedBook);
     }
 
     private boolean isbnExists(final String isbn) {

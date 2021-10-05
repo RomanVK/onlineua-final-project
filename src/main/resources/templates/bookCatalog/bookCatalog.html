@@ -63,7 +63,7 @@
                     <td><span th:text="${book.isbn}">isbn</span></td>
                     <td><span th:text="${book.quantity}">quantity</span></td>
                     <td sec:authorize="hasAuthority('ADMIN')">
-                        <a class="page-link" href="#" th:href="@{~/admin/editBook(id=${book.id})}"
+                        <a class="page-link" href="#" th:href="@{~/admin/showEditBook(id=${book.id})}"
                            th:utext="#{edit}">EDIT</a>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">

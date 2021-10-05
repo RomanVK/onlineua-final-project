@@ -17,6 +17,7 @@ import ua.online.onlineua_final_project.service.AdminService;
 import ua.online.onlineua_final_project.service.BookService;
 import ua.online.onlineua_final_project.service.LibrarianService;
 import ua.online.onlineua_final_project.web.error.BookAlreadyExistException;
+import ua.online.onlineua_final_project.web.error.NoEntityException;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -185,7 +186,7 @@ public class AdminController {
     @GetMapping(value = {"deleteBook"})
     public ModelAndView deleteBook(Model model, @RequestParam("id") long id) {
         log.info("Try to delete Book with id: {}", id);
-        ModelAndView mav= new ModelAndView("bookCatalog/bookCatalog");
+        ModelAndView mav = new ModelAndView("bookCatalog/bookCatalog");
         try {
             adminService.deleteBook(id);
             log.info("Book with id {} was deleted", id);
@@ -200,5 +201,48 @@ public class AdminController {
             return mav;
         }
     }
+
+    @GetMapping(value = {"showEditBook"})
+    public ModelAndView showEditBook(Model model, @RequestParam("id") long id) {
+        log.info("Try to find Book with id: {}", id);
+        ModelAndView mav = new ModelAndView("admin/showEditBook");
+        mav.addObject("book", new BookDTO());
+        try {
+            Book selectedBook = bookService.getBookById(id);
+            log.info("Book with id {} was finded", id);
+            mav.addObject("message", "Book with id: " + id + " is editing");
+            mav.addObject("selectedBook", selectedBook);
+            mav.addObject("id", id);
+            return mav;
+        } catch (NoEntityException nex) {
+            String message = nex.getMessage();
+            log.info(message);
+            mav.addObject("message",
+                    message);
+            return mav;
+        }
+    }
+
+    @PostMapping(value = {"editBook"})
+    public ModelAndView editBook(@ModelAttribute("book") @Valid BookDTO bookDTO, @RequestParam("id") long id) {
+        log.info("Try to edit Book with id: {}", id);
+        ModelAndView mav;
+        try {
+            bookService.editBookById(id, bookDTO);
+            log.info("Book with id {} was edited", id);
+            mav = new ModelAndView("bookCatalog/bookCatalog");
+            mav.addObject("message", "Book with id: " + id + " was edited");
+            List<Book> books = bookService.getAllBooks();
+            mav.addObject("books", books);
+            return mav;
+        } catch (NoEntityException nex) {
+            String message = nex.getMessage();
+            log.info(message);
+            mav = new ModelAndView("admin/showEditBook");
+            mav.addObject("message", message);
+            return mav;
+        }
+    }
+
 
 }
