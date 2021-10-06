@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ua.online.onlineua_final_project.entity.RoleType;
 import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.repository.UserRepository;
+import ua.online.onlineua_final_project.web.error.NoEntityException;
 
 import java.util.List;
 
@@ -22,5 +23,14 @@ public class LibrarianService {
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAllByRole(RoleType.USER);
         return users;
+    }
+
+    public User getUserById(long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NoEntityException("There is no user with id:" + id));
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(new User());
     }
 }

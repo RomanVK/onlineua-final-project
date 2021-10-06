@@ -3,24 +3,47 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:with="lang=${#locale.language}" th:lang="${lang}">
 <head th:insert="fragments.html :: headerfiles">
-    <title th:utext="#{user}">userAccount</title>
+    <title th:utext="#{user.account}">User Account</title>
 </head>
 <body>
 <header th:insert="fragments.html :: nav"></header>
-<!--TODO make like adminAccount-->
+<h2 class="page-header">
+    <strong th:utext="#{user.account}">User Account</strong>
+</h2>
 <table>
-    <tr valign='top'>
+    <tr>
         <td>
-            <table>
-                <tr>
-                    <td>
-                        <h2 class="page-header">
-                            <strong th:utext="#{user}">userAccount</strong>
-                        </h2>
-                    </td>
-                </tr>
-                <tr>
-            </table>
+            <span th:insert="fragments.html :: loggedUserInfo"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/admin/librariansList}" th:utext="#{delete.librarian}">
+                Delete Librarian</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/admin/showCreateLibrarian}" th:utext="#{create.librarian}">
+                Create Librarian</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/librarian/usersList}" th:utext="#{lock.unlock.user}">
+                Lock/ unlock user</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/bookCatalog}" th:utext="#{edit.delete.book}">
+                Edit/ delete book</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/admin/showCreateBook}" th:utext="#{create.book}">
+                Create book</a>
         </td>
     </tr>
 </table>

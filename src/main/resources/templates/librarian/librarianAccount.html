@@ -3,24 +3,23 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:with="lang=${#locale.language}" th:lang="${lang}">
 <head th:insert="fragments.html :: headerfiles">
-    <title th:utext="#{librarian}">librarianAccount</title>
+    <title th:utext="#{librarian.account}">Librarian Account</title>
 </head>
 <body>
 <header th:insert="fragments.html :: nav"></header>
-<!--TODO make like adminAccount-->
+<h2 class="page-header">
+    <strong th:utext="#{librarian.account}">Librarian Account</strong>
+</h2>
 <table>
-    <tr valign='top'>
+    <tr>
         <td>
-            <table>
-                <tr>
-                    <td>
-                        <h2 class="page-header">
-                            <strong th:utext="#{librarian}">librarianAccount</strong>
-                        </h2>
-                    </td>
-                </tr>
-                <tr>
-            </table>
+            <span th:insert="fragments.html :: loggedUserInfo"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="nav-link" href="#" th:href="@{~/librarian/usersList}" th:utext="#{users.list}">
+                Users list</a>
         </td>
     </tr>
 </table>

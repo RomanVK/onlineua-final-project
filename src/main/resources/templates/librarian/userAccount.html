@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+    <title th:utext="#{user.account}">User Account</title>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<h2 class="page-header">
+    <strong th:utext="#{user.account}">User Account</strong>
+</h2>
+<table>
+    <tr>
+        <td>
+            <div>
+                <!--    TODO make i18n-->
+                <h3>
+                    Registration data
+                </h3>
+                <table border="1" cellpadding="5" cellspacing="1">
+                    <tr>
+                        <td>ID</td>
+                        <td><span th:text="${selectedUser.id}"> id</span></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><span th:text="${selectedUser.email}"> lastName</span></td>
+                    </tr>
+                    <tr>
+                        <td>Role</td>
+                        <td><span th:text="${selectedUser.email}"> lastName</span></td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td><span th:text="${selectedUser.firstName}"> firstName</span></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td><span th:text="${selectedUser.lastName}"> lastName</span></td>
+                    </tr>
+                    <tr>
+                        <td>Non Locked</td>
+                        <td><span th:text="${selectedUser.nonLocked}"> Non Locked</span></td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
