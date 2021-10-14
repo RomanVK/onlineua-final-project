@@ -3,6 +3,7 @@ package ua.online.onlineua_final_project.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,11 +13,11 @@ import javax.persistence.*;
 @ToString
 
 @Entity
-@Table( name="user",
-        uniqueConstraints={@UniqueConstraint(columnNames={"email"})})
+@Table(name = "user",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
     @Column(name = "first_name", nullable = false)
@@ -32,4 +33,14 @@ public class User {
     private String password;
     @Column(name = "non_locked", nullable = false)
     private boolean nonLocked;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(
+            name = "users_books",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books;
 }

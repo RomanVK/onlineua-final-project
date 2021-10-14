@@ -5,20 +5,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.entity.Book;
+import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.repository.BookRepository;
+import ua.online.onlineua_final_project.repository.UserRepository;
 import ua.online.onlineua_final_project.web.error.BookAlreadyExistException;
 import ua.online.onlineua_final_project.web.error.NoEntityException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
 @Service
 public class BookService {
     BookRepository bookRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Book> getAllBooks() {
@@ -45,7 +50,7 @@ public class BookService {
 
     public Book getBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(
-                () -> new NoEntityException("There is not a book with that id:" + id));
+                () -> new NoEntityException("There is no a book with that id:" + id));
     }
 
     public void editBookById(long id, BookDTO bookDTO) {
@@ -57,6 +62,29 @@ public class BookService {
         selectedBook.setPublishingDate(bookDTO.getPublishingDate());
         selectedBook.setTitle(bookDTO.getTitle());
         bookRepository.save(selectedBook);
+    }
+
+    public List<Book> getAllUserBooks(Long userId) {
+        return getUserById(userId).getBooks();
+    }
+
+    @Transactional
+    public Book orderBookById(Long bookId, Long userId) {
+        Book orderedBook = getBookById(bookId);
+        User orderingUser = getUserById(userId);
+
+        List<User> bookUsers = orderedBook.getUsers();
+        bookUsers.add(orderingUser);
+
+        List<Book> userBooks = orderingUser.getBooks();
+        userBooks.add(orderedBook);
+
+        return getBookById(bookId);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NoEntityException("There is no an user with that id:" + id));
     }
 
     private boolean isbnExists(final String isbn) {

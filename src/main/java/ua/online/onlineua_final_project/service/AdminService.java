@@ -54,16 +54,16 @@ public class AdminService {
                 .build());
     }
 
-    public void lockUser(long id){
+    public void lockUser(long id) {
         User lockUser = userRepository.findById(id).
-                orElseThrow(()->new NoEntityException("There is not user with id:" + id));
+                orElseThrow(() -> new NoEntityException("There is no user with id:" + id));
         lockUser.setNonLocked(false);
         userRepository.save(lockUser);
     }
 
-    public void unlockUser(long id){
+    public void unlockUser(long id) {
         User unlockUser = userRepository.findById(id).
-                orElseThrow(()->new NoEntityException("There is not user with id:" + id));
+                orElseThrow(() -> new NoEntityException("There is no user with id:" + id));
         unlockUser.setNonLocked(true);
         userRepository.save(unlockUser);
     }
@@ -76,7 +76,8 @@ public class AdminService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User getUserByEmail(String email){
-        return userRepository.findByEmail(email).orElse(new User());
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new NoEntityException("There is no user with email " + email));
     }
 }

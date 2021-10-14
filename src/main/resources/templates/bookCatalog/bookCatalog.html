@@ -71,7 +71,7 @@
                            th:utext="#{delete}">DELETE</a>
                     </td>
                     <td sec:authorize="hasAuthority('USER')">
-                        <a class="page-link" href="#" th:href="@{~/user/orderBook(id=${book.id})}"
+                        <a class="page-link" href="#" th:href="@{~/user/orderBook(bookId=${book.id})}"
                            th:utext="#{order}">ORDER</a>
                     </td>
                 </tr>

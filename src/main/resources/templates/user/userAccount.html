@@ -17,33 +17,35 @@
         </td>
     </tr>
     <tr>
-        <td>
-            <a class="nav-link" href="#" th:href="@{~/admin/librariansList}" th:utext="#{delete.librarian}">
-                Delete Librarian</a>
-        </td>
+        <td><span th:text="#{list.books.subscription}">List of books on the subscription</span></td>
     </tr>
     <tr>
         <td>
-            <a class="nav-link" href="#" th:href="@{~/admin/showCreateLibrarian}" th:utext="#{create.librarian}">
-                Create Librarian</a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a class="nav-link" href="#" th:href="@{~/librarian/usersList}" th:utext="#{lock.unlock.user}">
-                Lock/ unlock user</a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a class="nav-link" href="#" th:href="@{~/bookCatalog}" th:utext="#{edit.delete.book}">
-                Edit/ delete book</a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a class="nav-link" href="#" th:href="@{~/admin/showCreateBook}" th:utext="#{create.book}">
-                Create book</a>
+            <table id="users" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Publishing date</th>
+                    <th>ISBN</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${userBooks.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <tr th:each="book : ${userBooks}">
+                    <td><span th:text="${book.id}">id</span></td>
+                    <td><span th:text="${book.title}">title</span></td>
+                    <td><span th:text="${book.author}">author</span></td>
+                    <td><span th:text="${book.publisher}">publisher</span></td>
+                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${book.isbn}">isbn</span></td>
+                </tr>
+                </tbody>
+            </table>
         </td>
     </tr>
 </table>
