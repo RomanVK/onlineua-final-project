@@ -13,7 +13,7 @@
 <table>
     <tr>
         <td>
-            <div>
+            <div th:fragment="selectedUserInfo">
                 <!--    TODO make i18n-->
                 <h3>
                     Registration data
@@ -39,12 +39,48 @@
                         <td>Last Name</td>
                         <td><span th:text="${selectedUser.lastName}"> lastName</span></td>
                     </tr>
-                    <tr>
-                        <td>Non Locked</td>
-                        <td><span th:text="${selectedUser.nonLocked}"> Non Locked</span></td>
-                    </tr>
                 </table>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <td><span th:text="#{list.books.subscription}">List of books on the subscription</span></td>
+    </tr>
+    <tr>
+        <td>
+            <table id="users" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Publishing date</th>
+                    <th>ISBN</th>
+                    <th sec:authorize="hasAuthority('LIBRARIAN')">
+                        <span th:text="#{return}">RETURN</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${userBooks.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <tr th:each="book : ${userBooks}">
+                    <td><span th:text="${book.id}">id</span></td>
+                    <td><span th:text="${book.title}">title</span></td>
+                    <td><span th:text="${book.author}">author</span></td>
+                    <td><span th:text="${book.publisher}">publisher</span></td>
+                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${book.isbn}">isbn</span></td>
+                    <td sec:authorize="hasAuthority('LIBRARIAN')">
+                        <a class="page-link" href="#"
+                           th:href="@{~/librarian/returnUserBook(bookId=${book.id}, userId=${selectedUser.id})}"
+                           th:utext="#{return}">RETURN</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </td>
     </tr>
 </table>

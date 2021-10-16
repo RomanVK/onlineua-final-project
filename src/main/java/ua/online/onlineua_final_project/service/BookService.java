@@ -82,6 +82,18 @@ public class BookService {
         return getBookById(bookId);
     }
 
+    @Transactional
+    public void returnUserBook(Long userId, Long bookId) {
+        Book orderedBook = getBookById(bookId);
+        User orderingUser = getUserById(userId);
+
+        List<User> bookUsers = orderedBook.getUsers();
+        bookUsers.remove(orderingUser);
+
+        List<Book> userBooks = orderingUser.getBooks();
+        userBooks.remove(orderedBook);
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new NoEntityException("There is no an user with that id:" + id));

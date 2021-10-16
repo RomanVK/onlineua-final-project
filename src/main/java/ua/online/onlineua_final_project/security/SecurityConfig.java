@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/userAccount").hasAnyAuthority("LIBRARIAN", "USER")
                 .antMatchers("/user/**").hasAnyAuthority("USER")
                 //TODO make better security for admin and librarian
-                //.antMatchers("/librarian/**").hasAnyAuthority("LIBRARIAN")
-                .antMatchers("/librarian/usersList").hasAnyAuthority("LIBRARIAN","ADMIN")
+                .antMatchers("/librarian/**").hasAnyAuthority("LIBRARIAN")
+                .antMatchers("/librarian/usersList").hasAnyAuthority("ADMIN")
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
                 .and()
                 .formLogin()
@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         response.sendRedirect("/librarian/librarianAccount");
                     }
                     if (roles.contains("USER")) {
-                        response.sendRedirect("/user/userAccount" );
+                        response.sendRedirect("/user/userAccount");
                     }
                 })
                 .usernameParameter("email")
