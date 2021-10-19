@@ -18,8 +18,63 @@
     </tr>
     <tr>
         <td>
+            <div th:if="${param.error}" class="alert alert-danger">
+                Something wrong happened
+            </div>
+            <div th:if="${message}" class="alert alert-danger">
+                <p th:text="${message}"></p>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <a class="nav-link" href="#" th:href="@{~/librarian/usersList}" th:utext="#{users.list}">
                 Users list</a>
+        </td>
+    </tr>
+    <tr>
+        <td><span th:text="#{books.in.the.orders}">Books in the orders</span></td>
+    </tr>
+    <tr>
+        <td>
+            <table id="booksInTheOrders" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <!--                TODO make i18n-->
+                <tr>
+                    <th>User</th>
+                    <th>Book</th>
+                    <th>Give out on subscription</th>
+                    <th>Give out in reading room</th>
+                    <th>Reject</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${users.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <span th:each="user : ${users}">
+                    <tr th:each="book : ${user.booksThatAreInUserOrder}">
+                        <td><span th:text="${user.toString()}">User</span></td>
+                        <td><span th:text="${book.toString()}">Book</span></td>
+                        <td>
+                            <a class="page-link" href="#"
+                               th:href="@{~/librarian/giveOutTheBookToUserSubscription(bookId=${book.id}, userId=${user.id})}"
+                               th:utext="#{give.out.to.the.subscription}">Give out to the subscription</a>
+                        </td>
+                        <td>
+                            <a class="page-link" href="#"
+                               th:href="@{~/librarian/giveOutTheBookToReadingRoom(bookId=${book.id}, userId=${user.id})}"
+                               th:utext="#{give.out.to.the.reading.room}">Give out to the reading room</a>
+                        </td>
+                        <td>
+                            <a class="page-link" href="#"
+                               th:href="@{~/librarian/rejectTheOrder(bookId=${book.id}, userId=${user.id})}"
+                               th:utext="#{reject.the.order}">Reject the order</a>
+                        </td>
+                    </tr>
+                </span>
+                </tbody>
+            </table>
         </td>
     </tr>
 </table>

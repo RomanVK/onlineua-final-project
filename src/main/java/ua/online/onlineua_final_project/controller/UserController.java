@@ -15,8 +15,9 @@ import ua.online.onlineua_final_project.entity.User;
 import ua.online.onlineua_final_project.service.BookService;
 import ua.online.onlineua_final_project.service.UserService;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -35,7 +36,9 @@ public class UserController {
     @GetMapping(value = {"userAccount"})
     public ModelAndView userAccount(Model model) {
         ModelAndView mav = new ModelAndView("user/userAccount");
-        List<Book> userBooks = new ArrayList<>();
+        Set<Book> booksInTheOrder = new HashSet<>();
+        Set<Book> booksOnTheSubscription = new HashSet<>();
+        Set<Book> booksInTheReadingRoom = new HashSet<>();
         try {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof UserDetails) {
@@ -44,26 +47,33 @@ public class UserController {
                 User loggedUser = userService.getUserByEmail(emailLoggedUser);
                 mav.addObject("loggedUser", loggedUser);
                 Long userId = loggedUser.getId();
-                userBooks = bookService.getAllUserBooks(userId);
+                booksInTheOrder = bookService.getUserBooksInOrder(userId);
+                booksOnTheSubscription = bookService.getUserBooksInSubscription(userId);
+                booksInTheReadingRoom = bookService.getUserBooksInReadingRoom(userId);
             } else {
                 log.info("The Logged user is unknown");
                 mav.addObject("message", "The Logged user is unknown");
             }
-            mav.addObject("userBooks", userBooks);
+            mav.addObject("booksInTheOrder", booksInTheOrder);
+            mav.addObject("booksOnTheSubscription", booksOnTheSubscription);
+            mav.addObject("booksInTheReadingRoom", booksInTheReadingRoom);
             return mav;
         } catch (Exception ex) {
             log.info("Something went a wrong way");
             mav.addObject("message",
                     "Something went a wrong way.");
+            mav.addObject("booksInTheOrder", booksInTheOrder);
+            mav.addObject("booksOnTheSubscription", booksOnTheSubscription);
+            mav.addObject("booksInTheReadingRoom", booksInTheReadingRoom);
             return mav;
         }
     }
-
 
     @GetMapping(value = {"orderBook"})
     public ModelAndView orderBook(Model model, @RequestParam("bookId") long bookId) {
         log.info("Try to order book with id: {}", bookId);
         ModelAndView mav = new ModelAndView("bookCatalog/bookCatalog");
+        List<Book> books;
         try {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof UserDetails) {
@@ -74,21 +84,22 @@ public class UserController {
                 bookService.orderBookById(bookId, userId);
                 log.info("User with id {} ordered book with id {}", userId, bookId);
                 mav.addObject("message",
-                        "User with id " + userId + "ordered book with id " + bookId);
+                        "User with id " + userId + " ordered book with id " + bookId);
             } else {
                 log.info("The Logged user is unknown");
                 mav.addObject("message", "The Logged user is unknown");
             }
 
-            List<Book> books = bookService.getAllBooks();
+            books = bookService.getAllBooks();
             mav.addObject("books", books);
             return mav;
         } catch (Exception ex) {
-            log.info("Something went a wrong way. Book with id {} wasn't ordered", bookId);
+            log.info(ex.getMessage() + "Book with id {} wasn't ordered", bookId);
             mav.addObject("message",
-                    "Something went a wrong way. Book with id " + bookId + " was't ordered");
+                    ex.getMessage() + "Book with id " + bookId + " wasn't ordered");
+            books = bookService.getAllBooks();
+            mav.addObject("books", books);
             return mav;
         }
     }
-
 }

@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/welcome", "/login", "/registration_form").permitAll()
-                .antMatchers("/bookCatalog/bookCatalog").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("/bookCatalog").hasAnyAuthority("ADMIN", "USER")
                 .antMatchers("/user/userAccount").hasAnyAuthority("LIBRARIAN", "USER")
                 .antMatchers("/user/**").hasAnyAuthority("USER")
                 //TODO make better security for admin and librarian

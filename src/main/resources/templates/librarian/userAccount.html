@@ -44,11 +44,21 @@
         </td>
     </tr>
     <tr>
-        <td><span th:text="#{list.books.subscription}">List of books on the subscription</span></td>
+        <td>
+            <div th:if="${param.error}" class="alert alert-danger">
+                Something wrong happened
+            </div>
+            <div th:if="${message}" class="alert alert-danger">
+                <p th:text="${message}"></p>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><span th:text="#{books.in.the.order}">Books in the order</span></td>
     </tr>
     <tr>
         <td>
-            <table id="users" border="1" cellpadding="5" cellspacing="1">
+            <table id="booksInTheOrder" border="1" cellpadding="5" cellspacing="1">
                 <thead>
                 <tr>
                     <th>id</th>
@@ -57,25 +67,97 @@
                     <th>Publisher</th>
                     <th>Publishing date</th>
                     <th>ISBN</th>
-                    <th sec:authorize="hasAuthority('LIBRARIAN')">
-                        <span th:text="#{return}">RETURN</span>
-                    </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${userBooks.isEmpty()}">
+                <tr th:if="${booksInTheOrder.isEmpty()}">
                     <td><span th:text="#{no.books.available}">No books available</span></td>
                 </tr>
-                <tr th:each="book : ${userBooks}">
+                <tr th:each="book : ${booksInTheOrder}">
                     <td><span th:text="${book.id}">id</span></td>
                     <td><span th:text="${book.title}">title</span></td>
                     <td><span th:text="${book.author}">author</span></td>
                     <td><span th:text="${book.publisher}">publisher</span></td>
                     <td><span th:text="${book.publishingDate}">publishingDate</span></td>
                     <td><span th:text="${book.isbn}">isbn</span></td>
-                    <td sec:authorize="hasAuthority('LIBRARIAN')">
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td><span th:text="#{books.on.the.subscription}">Books on the subscription</span></td>
+    </tr>
+    <tr>
+        <td>
+            <table id="booksOnTheSubscription" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Publishing date</th>
+                    <th>ISBN</th>
+                    <th>
+                        <span th:text="#{return}">RETURN</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${booksOnTheSubscription.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <tr th:each="book : ${booksOnTheSubscription}">
+                    <td><span th:text="${book.id}">id</span></td>
+                    <td><span th:text="${book.title}">title</span></td>
+                    <td><span th:text="${book.author}">author</span></td>
+                    <td><span th:text="${book.publisher}">publisher</span></td>
+                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${book.isbn}">isbn</span></td>
+                    <td>
                         <a class="page-link" href="#"
-                           th:href="@{~/librarian/returnUserBook(bookId=${book.id}, userId=${selectedUser.id})}"
+                           th:href="@{~/librarian/returnUserBookFromSubscription(bookId=${book.id}, userId=${selectedUser.id})}"
+                           th:utext="#{return}">RETURN</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td><span th:text="#{books.in.the.reading.room}">Books in the reading room</span></td>
+    </tr>
+    <tr>
+        <td>
+            <table id="booksInTheReadingRoom" border="1" cellpadding="5" cellspacing="1">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Publishing date</th>
+                    <th>ISBN</th>
+                    <th>
+                        <span th:text="#{return}">RETURN</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${booksInTheReadingRoom.isEmpty()}">
+                    <td><span th:text="#{no.books.available}">No books available</span></td>
+                </tr>
+                <tr th:each="book : ${booksInTheReadingRoom}">
+                    <td><span th:text="${book.id}">id</span></td>
+                    <td><span th:text="${book.title}">title</span></td>
+                    <td><span th:text="${book.author}">author</span></td>
+                    <td><span th:text="${book.publisher}">publisher</span></td>
+                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${book.isbn}">isbn</span></td>
+                    <td>
+                        <a class="page-link" href="#"
+                           th:href="@{~/librarian/returnUserBookFromReadingRoom(bookId=${book.id}, userId=${selectedUser.id})}"
                            th:utext="#{return}">RETURN</a>
                     </td>
                 </tr>
