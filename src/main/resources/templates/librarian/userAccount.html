@@ -108,16 +108,17 @@
                 <tr th:if="${booksOnTheSubscription.isEmpty()}">
                     <td><span th:text="#{no.books.available}">No books available</span></td>
                 </tr>
-                <tr th:each="book : ${booksOnTheSubscription}">
-                    <td><span th:text="${book.id}">id</span></td>
-                    <td><span th:text="${book.title}">title</span></td>
-                    <td><span th:text="${book.author}">author</span></td>
-                    <td><span th:text="${book.publisher}">publisher</span></td>
-                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
-                    <td><span th:text="${book.isbn}">isbn</span></td>
+                <tr th:each="userBookSubscription : ${booksOnTheSubscription}">
+                    <td><span th:text="${userBookSubscription.book.id}">id</span></td>
+                    <td><span th:text="${userBookSubscription.book.title}">title</span></td>
+                    <td><span th:text="${userBookSubscription.book.author}">author</span></td>
+                    <td><span th:text="${userBookSubscription.book.publisher}">publisher</span></td>
+                    <td><span th:text="${userBookSubscription.book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${userBookSubscription.book.isbn}">isbn</span></td>
                     <td>
                         <a class="page-link" href="#"
-                           th:href="@{~/librarian/returnUserBookFromSubscription(bookId=${book.id}, userId=${selectedUser.id})}"
+                           th:href="@{~/librarian/returnUserBookFromSubscription(bookId=${userBookSubscription.book.id},
+                           userId=${selectedUser.id})}"
                            th:utext="#{return}">RETURN</a>
                     </td>
                 </tr>

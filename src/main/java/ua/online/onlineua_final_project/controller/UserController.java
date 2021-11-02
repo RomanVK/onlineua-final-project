@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.entity.User;
+import ua.online.onlineua_final_project.entity.UserBookSubscription;
 import ua.online.onlineua_final_project.service.BookService;
 import ua.online.onlineua_final_project.service.UserService;
 
@@ -37,7 +38,7 @@ public class UserController {
     public ModelAndView userAccount(Model model) {
         ModelAndView mav = new ModelAndView("user/userAccount");
         Set<Book> booksInTheOrder = new HashSet<>();
-        Set<Book> booksOnTheSubscription = new HashSet<>();
+        Set<UserBookSubscription> booksOnTheSubscription = new HashSet<>();
         Set<Book> booksInTheReadingRoom = new HashSet<>();
         try {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

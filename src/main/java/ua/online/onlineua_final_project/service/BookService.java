@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.entity.User;
+import ua.online.onlineua_final_project.entity.UserBookSubscription;
 import ua.online.onlineua_final_project.repository.BookRepository;
 import ua.online.onlineua_final_project.repository.UserRepository;
 import ua.online.onlineua_final_project.web.error.*;
@@ -68,7 +69,7 @@ public class BookService {
         return getUserById(userId).getBooksThatAreInUserOrder();
     }
 
-    public Set<Book> getUserBooksInSubscription(Long userId) {
+    public Set<UserBookSubscription> getUserBooksInSubscription(Long userId) {
         return getUserById(userId).getBooksThatAreInTheUserSubscription();
     }
 
@@ -83,13 +84,13 @@ public class BookService {
 
         User orderingUser = getUserById(userId);
         Set<Book> userBooksInOrder = orderingUser.getBooksThatAreInUserOrder();
-        Set<Book> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
+        Set<UserBookSubscription> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
         Set<Book> userBooksInReadingRoom = orderingUser.getBooksThatAreInTheReadingRoom();
 
         if (userBooksInOrder.contains(orderedBook))
             throw new UserAlreadyHasTheBook("You already ordered the book with id:" + bookId);
 
-        if (userBooksInSubscription.contains(orderedBook))
+        if (userBooksInSubscription.contains(new UserBookSubscription(orderingUser, orderedBook)))
             throw new RuntimeException("You already have the book with id:" + bookId + " on the subscription");
 
         if (userBooksInReadingRoom.contains(orderedBook))
@@ -106,17 +107,17 @@ public class BookService {
     public void giveOutBookToTheSubscription(Long bookId, Long userId) {
         Book giveOutBook = getBookById(bookId);
         Set<User> bookUsersInOrder = giveOutBook.getUsersWhoOrderedTheBook();
-        Set<User> bookUsersInSubscription = giveOutBook.getUsersWhoHaveTheBookBySubscription();
+        Set<UserBookSubscription> bookUsersInSubscription = giveOutBook.getUsersWhoHaveTheBookBySubscription();
 
         User orderingUser = getUserById(userId);
         Set<Book> userBooksInOrder = orderingUser.getBooksThatAreInUserOrder();
-        Set<Book> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
+        Set<UserBookSubscription> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
         Set<Book> userBooksInReadingRoom = orderingUser.getBooksThatAreInTheReadingRoom();
 
         if (!userBooksInOrder.contains(giveOutBook))
             throw new RuntimeException("The user doesn't have order by the book with id:" + bookId);
 
-        if (userBooksInSubscription.contains(giveOutBook))
+        if (userBooksInSubscription.contains(new UserBookSubscription(orderingUser, giveOutBook)))
             throw new RuntimeException("The user already have the book with id:" + bookId + " on the subscription");
 
         if (userBooksInReadingRoom.contains(giveOutBook))
@@ -128,12 +129,9 @@ public class BookService {
         bookUsersInOrder.remove(orderingUser);
         giveOutBook.setUsersWhoOrderedTheBook(bookUsersInOrder);
 
-        bookUsersInSubscription.add(orderingUser);
-        giveOutBook.setUsersWhoHaveTheBookBySubscription(bookUsersInSubscription);
+        giveOutBook.addUser(orderingUser);
 
         giveOutBook.setQuantity(giveOutBook.getQuantity() - 1);
-
-        bookRepository.save(giveOutBook);
 
     }
 
@@ -145,13 +143,13 @@ public class BookService {
 
         User orderingUser = getUserById(userId);
         Set<Book> userBooksInOrder = orderingUser.getBooksThatAreInUserOrder();
-        Set<Book> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
+        Set<UserBookSubscription> userBooksInSubscription = orderingUser.getBooksThatAreInTheUserSubscription();
         Set<Book> userBooksInReadingRoom = orderingUser.getBooksThatAreInTheReadingRoom();
 
         if (!userBooksInOrder.contains(giveOutBook))
             throw new RuntimeException("The user doesn't have order by the book with id:" + bookId);
 
-        if (userBooksInSubscription.contains(giveOutBook))
+        if (userBooksInSubscription.contains(new UserBookSubscription(orderingUser, giveOutBook)))
             throw new RuntimeException("The user already have the book with id:" + bookId + " on the subscription");
 
         if (userBooksInReadingRoom.contains(giveOutBook))
@@ -194,17 +192,16 @@ public class BookService {
     @Transactional
     public void returnUserBookFromSubscription(Long userId, Long bookId) {
         Book returnedBook = getBookById(bookId);
-        Set<User> bookUsersInSubscription = returnedBook.getUsersWhoHaveTheBookBySubscription();
+        Set<UserBookSubscription> bookUsersInSubscription = returnedBook.getUsersWhoHaveTheBookBySubscription();
 
         User selectedUser = getUserById(userId);
-        Set<Book> userBooksInSubscription = selectedUser.getBooksThatAreInTheUserSubscription();
+        Set<UserBookSubscription> userBooksInSubscription = selectedUser.getBooksThatAreInTheUserSubscription();
 
-        if (!userBooksInSubscription.contains(returnedBook))
+        if (!userBooksInSubscription.contains(new UserBookSubscription(selectedUser, returnedBook)))
             throw new RuntimeException(
                     "User with id:" + userId + " doesn't have the book with id:" + bookId + "in his subscription");
 
-        bookUsersInSubscription.remove(selectedUser);
-        returnedBook.setUsersWhoHaveTheBookBySubscription(bookUsersInSubscription);
+        returnedBook.removeUser(selectedUser);
         returnedBook.setQuantity(returnedBook.getQuantity() + 1);
         bookRepository.save(returnedBook);
 

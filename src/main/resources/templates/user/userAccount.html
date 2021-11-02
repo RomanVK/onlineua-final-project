@@ -72,19 +72,27 @@
                     <th>Publisher</th>
                     <th>Publishing date</th>
                     <th>ISBN</th>
+                    <th>Return date</th>
+                    <th>Penalty</th>
+                    <th>Pay penalty</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${booksOnTheSubscription.isEmpty()}">
                     <td><span th:text="#{no.books.available}">No books available</span></td>
                 </tr>
-                <tr th:each="book : ${booksOnTheSubscription}">
-                    <td><span th:text="${book.id}">id</span></td>
-                    <td><span th:text="${book.title}">title</span></td>
-                    <td><span th:text="${book.author}">author</span></td>
-                    <td><span th:text="${book.publisher}">publisher</span></td>
-                    <td><span th:text="${book.publishingDate}">publishingDate</span></td>
-                    <td><span th:text="${book.isbn}">isbn</span></td>
+                <tr th:each="userBookSubscription : ${booksOnTheSubscription}">
+                    <td><span th:text="${userBookSubscription.book.id}">id</span></td>
+                    <td><span th:text="${userBookSubscription.book.title}">title</span></td>
+                    <td><span th:text="${userBookSubscription.book.author}">author</span></td>
+                    <td><span th:text="${userBookSubscription.book.publisher}">publisher</span></td>
+                    <td><span th:text="${userBookSubscription.book.publishingDate}">publishingDate</span></td>
+                    <td><span th:text="${userBookSubscription.book.isbn}">isbn</span></td>
+                    <td><span th:text="${userBookSubscription.returnDate}">Return date</span></td>
+                    <!--                    TODO make recalculate penalty amount -->
+                    <td><span th:text="${userBookSubscription.amountOfPenalty}">Penalty</span></td>
+                    <!--                    TODO make Pay penalty action-->
+                    <td><span>Pay penalty</span></td>
                 </tr>
                 </tbody>
             </table>

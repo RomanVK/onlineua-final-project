@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Getter
@@ -12,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
+@EqualsAndHashCode
 
 @Entity
 @Table(name = "book",
@@ -44,18 +47,38 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @EqualsAndHashCode.Exclude
     private Set<User> usersWhoOrderedTheBook;
 
-    @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(
-            name = "users_books_subscriptions",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+    // took from https://vladmihalcea.com/the-best-way-to-map-a-many-to-many-association-with-extra-columns-when-using-jpa-and-hibernate/
+    @OneToMany(
+            mappedBy = "book",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<User> usersWhoHaveTheBookBySubscription;
+    @EqualsAndHashCode.Exclude
+    private Set<UserBookSubscription> usersWhoHaveTheBookBySubscription = new HashSet<>();
+
+    public void addUser(User user) {
+        UserBookSubscription userBookSubscription = new UserBookSubscription(user, this);
+        usersWhoHaveTheBookBySubscription.add(userBookSubscription);
+        user.getBooksThatAreInTheUserSubscription().add(userBookSubscription);
+    }
+
+    public void removeUser(User user) {
+        for (Iterator<UserBookSubscription> iterator = usersWhoHaveTheBookBySubscription.iterator();
+             iterator.hasNext(); ) {
+            UserBookSubscription userBookSubscription = iterator.next();
+
+            if (userBookSubscription.getBook().equals(this) &&
+                    userBookSubscription.getUser().equals(user)) {
+                iterator.remove();
+                userBookSubscription.getUser().getBooksThatAreInTheUserSubscription().remove(userBookSubscription);
+                userBookSubscription.setBook(null);
+                userBookSubscription.setUser(null);
+            }
+        }
+    }
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY,
@@ -66,6 +89,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @EqualsAndHashCode.Exclude
     private Set<User> usersWhoHaveTheBookInReadingRoom;
 
 }

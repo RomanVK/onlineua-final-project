@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.entity.User;
+import ua.online.onlineua_final_project.entity.UserBookSubscription;
 import ua.online.onlineua_final_project.service.BookService;
 import ua.online.onlineua_final_project.service.LibrarianService;
 
@@ -74,7 +75,7 @@ public class LibrarianController {
             mav.addObject("selectedUser", selectedUser);
             //make user's book list for page
             Set<Book> booksInTheOrder = bookService.getUserBooksInOrder(id);
-            Set<Book> booksOnTheSubscription = bookService.getUserBooksInSubscription(id);
+            Set<UserBookSubscription> booksOnTheSubscription = bookService.getUserBooksInSubscription(id);
             Set<Book> booksInTheReadingRoom = bookService.getUserBooksInReadingRoom(id);
             mav.addObject("booksInTheOrder", booksInTheOrder);
             mav.addObject("booksOnTheSubscription", booksOnTheSubscription);
@@ -98,6 +99,9 @@ public class LibrarianController {
         try {
             //give out the book
             bookService.giveOutBookToTheSubscription(bookId, userId);
+            mav.addObject("message",
+                    "The book with id:" + bookId + " was gave out to user subscription with id:" + userId);
+            log.info("The book with id: {} was gave out to user subscription with id:{}", bookId, userId);
             //make users list for librarian
             List<User> users = librarianService.getAllUsers();
             mav.addObject("users", users);
@@ -204,7 +208,7 @@ public class LibrarianController {
                                                        @RequestParam("bookId") long bookId) {
         ModelAndView mav = new ModelAndView("librarian/userAccount");
         Set<Book> booksInTheOrder = new HashSet<>();
-        Set<Book> booksOnTheSubscription = new HashSet<>();
+        Set<UserBookSubscription> booksOnTheSubscription = new HashSet<>();
         Set<Book> booksInTheReadingRoom = new HashSet<>();
         try {
             //return user book
@@ -239,7 +243,7 @@ public class LibrarianController {
                                                       @RequestParam("bookId") long bookId) {
         ModelAndView mav = new ModelAndView("librarian/userAccount");
         Set<Book> booksInTheOrder = new HashSet<>();
-        Set<Book> booksOnTheSubscription = new HashSet<>();
+        Set<UserBookSubscription> booksOnTheSubscription = new HashSet<>();
         Set<Book> booksInTheReadingRoom = new HashSet<>();
         try {
             //return user book

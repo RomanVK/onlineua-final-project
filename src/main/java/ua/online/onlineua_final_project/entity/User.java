@@ -46,18 +46,17 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
+    @EqualsAndHashCode.Exclude
     private Set<Book> booksThatAreInUserOrder;
 
-    @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(
-            name = "users_books_subscriptions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
+    // took from https://vladmihalcea.com/the-best-way-to-map-a-many-to-many-association-with-extra-columns-when-using-jpa-and-hibernate/
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<Book> booksThatAreInTheUserSubscription;
+    @EqualsAndHashCode.Exclude
+    private Set<UserBookSubscription> booksThatAreInTheUserSubscription;
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY,
@@ -68,5 +67,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
+    @EqualsAndHashCode.Exclude
     private Set<Book> booksThatAreInTheReadingRoom;
 }
