@@ -61,6 +61,8 @@ public class Book {
 
     public void addUser(User user) {
         UserBookSubscription userBookSubscription = new UserBookSubscription(user, this);
+        userBookSubscription.setReturnDate(LocalDate.now().plusDays(10L));
+        userBookSubscription.setAmountOfPenalty(0.0);
         usersWhoHaveTheBookBySubscription.add(userBookSubscription);
         user.getBooksThatAreInTheUserSubscription().add(userBookSubscription);
     }

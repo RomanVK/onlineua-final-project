@@ -89,10 +89,12 @@
                     <td><span th:text="${userBookSubscription.book.publishingDate}">publishingDate</span></td>
                     <td><span th:text="${userBookSubscription.book.isbn}">isbn</span></td>
                     <td><span th:text="${userBookSubscription.returnDate}">Return date</span></td>
-                    <!--                    TODO make recalculate penalty amount -->
                     <td><span th:text="${userBookSubscription.amountOfPenalty}">Penalty</span></td>
-                    <!--                    TODO make Pay penalty action-->
-                    <td><span>Pay penalty</span></td>
+                    <td th:if="${userBookSubscription.amountOfPenalty > 0}">
+                        <a class="page-link" href="#"
+                           th:href="@{~/user/payPenalty(bookId=${userBookSubscription.book.id})}"
+                        >pay</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>

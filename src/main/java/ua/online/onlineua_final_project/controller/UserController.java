@@ -103,4 +103,41 @@ public class UserController {
             return mav;
         }
     }
+
+    @GetMapping(value = {"payPenalty"})
+    public ModelAndView payPenalty(@RequestParam("bookId") long bookId) {
+        ModelAndView mav = new ModelAndView("user/userAccount");
+        Set<Book> booksInTheOrder = new HashSet<>();
+        Set<UserBookSubscription> booksOnTheSubscription = new HashSet<>();
+        Set<Book> booksInTheReadingRoom = new HashSet<>();
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                UserDetails loggedUserPrincipal = ((UserDetails) principal);
+                String emailLoggedUser = loggedUserPrincipal.getUsername();
+                User loggedUser = userService.getUserByEmail(emailLoggedUser);
+                mav.addObject("loggedUser", loggedUser);
+                Long userId = loggedUser.getId();
+                userService.payPenalty(userId, bookId);
+                booksInTheOrder = bookService.getUserBooksInOrder(userId);
+                booksOnTheSubscription = bookService.getUserBooksInSubscription(userId);
+                booksInTheReadingRoom = bookService.getUserBooksInReadingRoom(userId);
+            } else {
+                log.info("The Logged user is unknown");
+                mav.addObject("message", "The Logged user is unknown");
+            }
+            mav.addObject("booksInTheOrder", booksInTheOrder);
+            mav.addObject("booksOnTheSubscription", booksOnTheSubscription);
+            mav.addObject("booksInTheReadingRoom", booksInTheReadingRoom);
+            return mav;
+        } catch (Exception ex) {
+            log.info("Something went a wrong way = {}", ex.getMessage());
+            mav.addObject("message",
+                    "Something went a wrong way = " + ex.getMessage());
+            mav.addObject("booksInTheOrder", booksInTheOrder);
+            mav.addObject("booksOnTheSubscription", booksOnTheSubscription);
+            mav.addObject("booksInTheReadingRoom", booksInTheReadingRoom);
+            return mav;
+        }
+    }
 }

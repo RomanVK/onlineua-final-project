@@ -28,10 +28,10 @@ public class BookService {
     }
 
     public List<Book> getAllBooks() {
-        List<Book> books = bookRepository.findAll();
-        return books;
+        return bookRepository.findAll();
     }
 
+    @Transactional
     public Book createBook(BookDTO bookDTO) throws BookAlreadyExistException {
 
         if (isbnExists(bookDTO.getIsbn())) {
@@ -54,6 +54,7 @@ public class BookService {
                 () -> new NoEntityException("There is no a book with that id:" + id));
     }
 
+    @Transactional
     public void editBookById(long id, BookDTO bookDTO) {
         Book selectedBook = getBookById(id);
         selectedBook.setAuthor(bookDTO.getAuthor());
@@ -69,8 +70,11 @@ public class BookService {
         return getUserById(userId).getBooksThatAreInUserOrder();
     }
 
+    @Transactional
     public Set<UserBookSubscription> getUserBooksInSubscription(Long userId) {
-        return getUserById(userId).getBooksThatAreInTheUserSubscription();
+        User selectedUser = getUserById(userId);
+        selectedUser.updatePenalty();
+        return selectedUser.getBooksThatAreInTheUserSubscription();
     }
 
     public Set<Book> getUserBooksInReadingRoom(Long userId) {

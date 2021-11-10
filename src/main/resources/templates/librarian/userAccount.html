@@ -99,6 +99,8 @@
                     <th>Publisher</th>
                     <th>Publishing date</th>
                     <th>ISBN</th>
+                    <th>Return date</th>
+                    <th>Penalty</th>
                     <th>
                         <span th:text="#{return}">RETURN</span>
                     </th>
@@ -115,11 +117,14 @@
                     <td><span th:text="${userBookSubscription.book.publisher}">publisher</span></td>
                     <td><span th:text="${userBookSubscription.book.publishingDate}">publishingDate</span></td>
                     <td><span th:text="${userBookSubscription.book.isbn}">isbn</span></td>
+                    <td><span th:text="${userBookSubscription.returnDate}">Return date</span></td>
+                    <td><span th:text="${userBookSubscription.amountOfPenalty}">Penalty</span></td>
                     <td>
-                        <a class="page-link" href="#"
+                        <a th:if="${userBookSubscription.amountOfPenalty == 0.0}" class="page-link" href="#"
                            th:href="@{~/librarian/returnUserBookFromSubscription(bookId=${userBookSubscription.book.id},
                            userId=${selectedUser.id})}"
-                           th:utext="#{return}">RETURN</a>
+                           th:text="#{return}">RETURN</a>
+                        <span th:unless="${userBookSubscription.amountOfPenalty == 0.0}">NOT ALLOWED</span>
                     </td>
                 </tr>
                 </tbody>

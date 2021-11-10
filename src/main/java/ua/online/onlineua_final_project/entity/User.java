@@ -3,7 +3,10 @@ package ua.online.onlineua_final_project.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Getter
 @Setter
@@ -57,6 +60,46 @@ public class User {
     )
     @EqualsAndHashCode.Exclude
     private Set<UserBookSubscription> booksThatAreInTheUserSubscription;
+
+    public void updatePenalty() {
+        for (UserBookSubscription bookThatIsInTheUserSubscription : booksThatAreInTheUserSubscription) {
+            LocalDate returnDate = bookThatIsInTheUserSubscription.getReturnDate();
+            if (returnDate.isBefore(LocalDate.now())) {
+                long numberOfDays = DAYS.between(returnDate, LocalDate.now());
+                double amountPenalty = numberOfDays * 30.0;
+                bookThatIsInTheUserSubscription.setAmountOfPenalty(amountPenalty);
+
+                Book book = bookThatIsInTheUserSubscription.getBook();
+                Set<UserBookSubscription> usersWhoHaveTheBookBySubscription = book.getUsersWhoHaveTheBookBySubscription();
+                for (UserBookSubscription userWhoHaveTheBookBySubscription : usersWhoHaveTheBookBySubscription) {
+                    if (userWhoHaveTheBookBySubscription.getBook().equals(book) &&
+                            userWhoHaveTheBookBySubscription.getUser().equals(this)) {
+                        userWhoHaveTheBookBySubscription.setAmountOfPenalty(amountPenalty);
+                    }
+                }
+            }
+        }
+    }
+
+    public void payPenalty(Book selectedBook) {
+        for (UserBookSubscription bookThatAreInTheUserSubscription : booksThatAreInTheUserSubscription) {
+            if (bookThatAreInTheUserSubscription.getBook().equals(selectedBook) &&
+                    bookThatAreInTheUserSubscription.getUser().equals(this)) {
+                bookThatAreInTheUserSubscription.setReturnDate(LocalDate.now());
+                bookThatAreInTheUserSubscription.setAmountOfPenalty(0.0);
+
+                Set<UserBookSubscription> usersWhoHaveTheBookBySubscription = selectedBook.getUsersWhoHaveTheBookBySubscription();
+                for (UserBookSubscription userWhoHaveTheBookBySubscription : usersWhoHaveTheBookBySubscription) {
+                    if (userWhoHaveTheBookBySubscription.getBook().equals(selectedBook) &&
+                            userWhoHaveTheBookBySubscription.getUser().equals(this)) {
+                        userWhoHaveTheBookBySubscription.setAmountOfPenalty(0.0);
+                        userWhoHaveTheBookBySubscription.setReturnDate(LocalDate.now());
+                        return;
+                    }
+                }
+            }
+        }
+    }
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY,
