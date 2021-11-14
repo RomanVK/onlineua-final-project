@@ -18,4 +18,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Override
     Optional<Book> findById(Long aLong);
+
+    List<Book> findAllByAuthorContains(String searchQueryByAuthor);
 }

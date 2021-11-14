@@ -29,6 +29,30 @@
                     </td>
                 </tr>
             </table>
+            <div>
+                <form th:action="@{/bookCatalog/findBooksByAuthor}" th:object="${searchQueryByAuthor}" method="POST"
+                      enctype="utf8">
+                    <div>
+                        <label>to find books by author</label>
+                        <input th:field="*{content}"/>
+                    </div>
+                    <div class="form-actions" style="margin-top: 12px;">
+                        <button type="submit" class="btn btn-success" th:text="#{submit}">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <form th:action="@{/bookCatalog/findBooksByBookName}" th:object="${searchQueryByBookName}" method="POST"
+                      enctype="utf8">
+                    <div>
+                        <label>to find books by book name</label>
+                        <input th:field="*{content}"/>
+                    </div>
+                    <div class="form-actions" style="margin-top: 12px;">
+                        <button type="submit" class="btn btn-success" th:text="#{submit}">Submit</button>
+                    </div>
+                </form>
+            </div>
             <table id="users" border="1" cellpadding="5" cellspacing="1">
                 <thead>
                 <tr>

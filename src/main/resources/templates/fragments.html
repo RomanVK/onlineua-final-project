@@ -49,7 +49,7 @@
                     <a class="nav-link" href="#" th:href="@{~/welcome}" th:utext="#{home}">Welcome</a>
                 </li>
                 <li sec:authorize="hasAnyAuthority('ADMIN','USER')" class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{~/bookCatalog}" th:utext="#{book.catalog}">Book catalog</a>
+                    <a class="nav-link" href="#" th:href="@{~/bookCatalog/bookCatalog}" th:utext="#{book.catalog}">Book catalog</a>
                 </li>
                 <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
                     <a class="nav-link" href="#" th:href="@{~/admin/adminAccount}" th:utext="#{profile}">Profile</a>

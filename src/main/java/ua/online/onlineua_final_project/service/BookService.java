@@ -230,6 +230,15 @@ public class BookService {
 
     }
 
+    public List<Book> getAllBooksBySearchQueryByAuthor(String searchQueryByAuthor) {
+        return bookRepository.findAllByAuthorContains(searchQueryByAuthor);
+    }
+
+    public List<Book> getAllBooksBySearchQueryByBookName(String searchQueryByBookName) {
+        return bookRepository.findAllByAuthorContains(searchQueryByBookName);
+
+    }
+
     private User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new NoEntityException("There is no an user with that id:" + id));
