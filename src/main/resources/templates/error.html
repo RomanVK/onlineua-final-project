@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:insert="fragments.html :: headerfiles">
+    <title th:utext="#{error}">Error</title>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<table>
+    <tr valign='top'>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-header">
+                            <strong th:utext="#{error}">Error</strong>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div th:if="${message}" class="alert alert-danger">
+                            <p th:text="${message}"></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

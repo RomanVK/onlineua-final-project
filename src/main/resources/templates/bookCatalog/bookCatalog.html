@@ -29,6 +29,7 @@
                     </td>
                 </tr>
             </table>
+            <!-- finding books           -->
             <div>
                 <form th:action="@{/bookCatalog/findBooksByAuthor}" th:object="${searchQueryByAuthor}" method="POST"
                       enctype="utf8">
@@ -42,10 +43,10 @@
                 </form>
             </div>
             <div>
-                <form th:action="@{/bookCatalog/findBooksByBookName}" th:object="${searchQueryByBookName}" method="POST"
+                <form th:action="@{/bookCatalog/findBooksByTitle}" th:object="${searchQueryByTitle}" method="POST"
                       enctype="utf8">
                     <div>
-                        <label>to find books by book name</label>
+                        <label>to find books by title</label>
                         <input th:field="*{content}"/>
                     </div>
                     <div class="form-actions" style="margin-top: 12px;">
@@ -53,14 +54,36 @@
                     </div>
                 </form>
             </div>
+            <!--            took https://examples.javacodegeeks.com/spring-boot-sorting-with-thymeleaf-tutorial/-->
+            <!-- books table           -->
             <table id="users" border="1" cellpadding="5" cellspacing="1">
                 <thead>
                 <tr>
                     <th>id</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Publisher</th>
-                    <th>Publishing date</th>
+                    <!-- sorting control via book Title-->
+                    <th>
+                        <a th:href="@{'/bookCatalog/page/' + ${currentPage} + '?sort-field=title&sort-dir='
+                         + ${reverseSortDir} + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}">Title</a>
+                    </th>
+                    <!-- sorting control via book Author-->
+                    <th>
+                        <a th:href="@{'/bookCatalog/page/' + ${currentPage} + '?sort-field=author&sort-dir='
+                         + ${reverseSortDir} + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}">Author</a>
+                    </th>
+                    <!-- sorting control via book Publisher-->
+                    <th>
+                        <a th:href="@{'/bookCatalog/page/' + ${currentPage} + '?sort-field=publisher&sort-dir='
+                         + ${reverseSortDir} + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}">Publisher</a>
+                    </th>
+                    <!-- sorting control via book Publishing date-->
+                    <th>
+                        <a th:href="@{'/bookCatalog/page/' + ${currentPage} + '?sort-field=publishingDate&sort-dir='
+                         + ${reverseSortDir} + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}">Publishing date</a>
+                    </th>
                     <th>ISBN</th>
                     <th>Quantity</th>
                     <th sec:authorize="hasAuthority('ADMIN')">
@@ -104,5 +127,40 @@
         </td>
     </tr>
 </table>
+<!-- pagination control -->
+<div th:if="${totalPages > 1}">
+    <div class="row col-sm-10">
+        <div class="col-sm-2">
+            Total books: <strong>[[${totalItems}]]</strong>
+        </div>
+        <div class="col-sm-1">
+                    <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                        <a th:href="@{'/bookCatalog/page/' + ${i} + '?sort-field=' + ${sortField} + '&sort-dir=' + ${sortDir}
+                         + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}"
+                           th:if="${currentPage != i}">[[${i}]]</a>
+                        <span th:unless="${currentPage != i}">[[${i}]]</span>
+                    </span>
+        </div>
+        <div class="col-sm-1">
+            <a th:href="@{'/bookCatalog/page/' + ${currentPage + 1} + '?sort-field=' + ${sortField} + '&sort-dir=' + ${sortDir}
+             + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}"
+               th:if="${currentPage < totalPages}">
+                Next
+            </a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+        <div class="col-sm-1">
+            <a th:href="@{'/bookCatalog/page/' + ${totalPages} + '?sort-field=' + ${sortField} + '&sort-dir=' + ${sortDir}
+             + '&search-request-by-author=' + ${searchRequestByAuthor}
+                         + '&search-request-by-title=' + ${searchRequestByTitle}}"
+               th:if="${currentPage < totalPages}">
+                Last
+            </a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -92,7 +92,6 @@ public class AdminController {
         return "admin/showCreateLibrarian";
     }
 
-    //    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = {"createLibrarian"})
     public ModelAndView createLibrarian(@ModelAttribute("librarian") @Valid NoteDTO note,
                                         HttpServletRequest request, Errors errors, Model model) {
@@ -136,7 +135,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "unlockUserAccount")
-    public ModelAndView unlockUser(Model model, @RequestParam("id") long id) {
+    public ModelAndView unlockUser(@RequestParam("id") long id) {
         log.info("Try to unlock user account with id: {}", id);
         ModelAndView mav = new ModelAndView("librarian/usersList");
         try {
@@ -161,86 +160,76 @@ public class AdminController {
         return "admin/showCreateBook";
     }
 
-    @PostMapping(value = {"createBook"})
-    public ModelAndView createBook(@ModelAttribute("book") @Valid BookDTO bookDTO,
-                                   HttpServletRequest request, Errors errors, Model model) {
+    @GetMapping(value = "usersList")
+    public String usersList() {
+        log.info("Redirecting to the librarian/usersList");
+        return "librarian/usersList";
+    }
+
+    @RequestMapping(value = "createBook", method = RequestMethod.POST)
+    public String createBook(@ModelAttribute("book") @Valid BookDTO bookDTO, Model model) {
         log.info("Try to create the book with following data: {}", bookDTO);
-        ModelAndView mav;
         try {
             Book book = bookService.createBook(bookDTO);
             log.info("Book with {} was created", book);
-            mav = new ModelAndView("bookCatalog/bookCatalog");
-            mav.addObject("message", "The Book with following data  " + book + " was created");
-            List<Book> books = bookService.getAllBooks();
-            mav.addObject("books", books);
-            return mav;
+            String message = "The Book with following data  " + book + " was created";
+            return "redirect:/bookCatalog/pageToRedirect/" + message + "?";
         } catch (BookAlreadyExistException baeEx) {
             log.info("The book with  ISBN: {} is already exists", bookDTO.getIsbn());
-            mav = new ModelAndView("admin/showCreateBook");
-            mav.addObject("message",
+            model.addAttribute("message",
                     "The book with  ISBN: " + bookDTO.getIsbn() + " is already exists");
-            return mav;
+            return "admin/showCreateBook";
         }
     }
 
     @GetMapping(value = {"deleteBook"})
-    public ModelAndView deleteBook(Model model, @RequestParam("id") long id) {
+    public String deleteBook(@RequestParam("id") long id) {
         log.info("Try to delete Book with id: {}", id);
-        ModelAndView mav = new ModelAndView("bookCatalog/bookCatalog");
+        String message;
         try {
             adminService.deleteBook(id);
             log.info("Book with id {} was deleted", id);
-            mav.addObject("message", "Book with id " + id + " was deleted");
-            List<Book> books = bookService.getAllBooks();
-            mav.addObject("books", books);
-            return mav;
+            message = "Book with id " + id + " was deleted";
         } catch (Exception ex) {
             log.info("Something went a wrong way. Book with id {} wasn't deleted", id);
-            mav.addObject("message",
-                    "Something went a wrong way. Book with id " + id + " wasn't deleted");
-            return mav;
+            message = "Something went a wrong way. Book with id " + id + " wasn't deleted";
         }
+        return "redirect:/bookCatalog/pageToRedirect/" + message + "?";
     }
 
+
     @GetMapping(value = {"showEditBook"})
-    public ModelAndView showEditBook(Model model, @RequestParam("id") long id) {
+    public ModelAndView showEditBook(@RequestParam("id") long id) {
         log.info("Try to find Book with id: {}", id);
         ModelAndView mav = new ModelAndView("admin/showEditBook");
         mav.addObject("book", new BookDTO());
         try {
             Book selectedBook = bookService.getBookById(id);
-            log.info("Book with id {} was finded", id);
+            log.info("Book with id {} was found", id);
             mav.addObject("message", "Book with id: " + id + " is editing");
             mav.addObject("selectedBook", selectedBook);
             mav.addObject("id", id);
-            return mav;
         } catch (NoEntityException nex) {
             String message = nex.getMessage();
             log.info(message);
-            mav.addObject("message",
-                    message);
-            return mav;
+            mav.addObject("message", message);
         }
+        return mav;
     }
 
     @PostMapping(value = {"editBook"})
-    public ModelAndView editBook(@ModelAttribute("book") @Valid BookDTO bookDTO, @RequestParam("id") long id) {
+    public String editBook(@ModelAttribute("book") @Valid BookDTO bookDTO, @RequestParam("id") long id, Model model) {
         log.info("Try to edit Book with id: {}", id);
-        ModelAndView mav;
         try {
             bookService.editBookById(id, bookDTO);
             log.info("Book with id {} was edited", id);
-            mav = new ModelAndView("bookCatalog/bookCatalog");
-            mav.addObject("message", "Book with id: " + id + " was edited");
-            List<Book> books = bookService.getAllBooks();
-            mav.addObject("books", books);
-            return mav;
+            String message = "Book with id: " + id + " was edited";
+            return "redirect:/bookCatalog/pageToRedirect/" + message + "?";
         } catch (NoEntityException nex) {
             String message = nex.getMessage();
             log.info(message);
-            mav = new ModelAndView("admin/showEditBook");
-            mav.addObject("message", message);
-            return mav;
+            model.addAttribute("message", message);
+            return "admin/showCreateBook";
         }
     }
 

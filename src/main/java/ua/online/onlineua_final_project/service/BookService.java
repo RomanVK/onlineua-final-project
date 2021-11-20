@@ -2,7 +2,11 @@ package ua.online.onlineua_final_project.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.entity.Book;
 import ua.online.onlineua_final_project.entity.User;
@@ -29,6 +33,24 @@ public class BookService {
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    public long getTotalBooks() {
+        log.info("Finding the total count of books from the dB.");
+        return bookRepository.count();
+    }
+
+    public Page<Book> findPaginated(int pageNumber, int pageSize,
+                                    String sortField, String sortDirection) {
+        log.info("Fetching the paginated books from the dB.");
+        final Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        return bookRepository.findAll(pageable);
+    }
+
+    public void save(final Book book) {
+        bookRepository.save(book);
     }
 
     @Transactional
@@ -230,12 +252,22 @@ public class BookService {
 
     }
 
-    public List<Book> getAllBooksBySearchQueryByAuthor(String searchQueryByAuthor) {
-        return bookRepository.findAllByAuthorContains(searchQueryByAuthor);
+    public Page<Book> getAllBooksBySearchQueryByAuthorPaginated(String searchQueryByAuthor, int pageNumber, int pageSize,
+                                                                String sortField, String sortDirection) {
+        log.info("Finding the paginated books by author from the dB.");
+        final Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        return bookRepository.findAllByAuthorContains(searchQueryByAuthor, pageable);
     }
 
-    public List<Book> getAllBooksBySearchQueryByBookName(String searchQueryByBookName) {
-        return bookRepository.findAllByAuthorContains(searchQueryByBookName);
+    public Page<Book> getAllBooksBySearchQueryByTitlePaginated(String searchQueryByTitle, int pageNumber, int pageSize,
+                                                               String sortField, String sortDirection) {
+        log.info("Finding the paginated books by title from the dB.");
+        final Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        return bookRepository.findAllByTitleContains(searchQueryByTitle, pageable);
 
     }
 
