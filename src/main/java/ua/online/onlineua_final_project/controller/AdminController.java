@@ -66,6 +66,7 @@ public class AdminController {
         return "admin/librariansList";
     }
 
+    //TODO make redirect to admin/librarianList due to code duplication
     @GetMapping(value = {"deleteLibrarian"})
     public ModelAndView deleteLibrarian(Model model, @RequestParam("id") long id) {
         log.info("Deleting librarian account with id: {}", id);
@@ -92,6 +93,7 @@ public class AdminController {
         return "admin/showCreateLibrarian";
     }
 
+    //TODO make redirect to admin/librarianList due to code duplication
     @PostMapping(value = {"createLibrarian"})
     public ModelAndView createLibrarian(@ModelAttribute("librarian") @Valid NoteDTO note,
                                         HttpServletRequest request, Errors errors, Model model) {
@@ -113,7 +115,7 @@ public class AdminController {
         }
     }
 
-    //TODO make separated utility method for the same function from lock|unlockUserAccount
+    //TODO make redirect to librarian/userList due to code duplication
     @GetMapping(value = "lockUserAccount")
     public ModelAndView lockUser(Model model, @RequestParam("id") long id) {
         log.info("Try to lock user account with id: {}", id);
@@ -134,6 +136,7 @@ public class AdminController {
         }
     }
 
+    //TODO make redirect to librarian/userList due to code duplication
     @GetMapping(value = "unlockUserAccount")
     public ModelAndView unlockUser(@RequestParam("id") long id) {
         log.info("Try to unlock user account with id: {}", id);

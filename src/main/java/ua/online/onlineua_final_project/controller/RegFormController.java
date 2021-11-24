@@ -28,6 +28,7 @@ public class RegFormController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "registration_form")
+    //TODO delete unnecessary argument(s)
     public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid NoteDTO note,
                                             HttpServletRequest request, Errors errors) {
         log.info("Registering user account with information: {}", note);

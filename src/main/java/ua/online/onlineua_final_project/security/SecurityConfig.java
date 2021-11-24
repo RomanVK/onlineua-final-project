@@ -36,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/welcome", "/login", "/registration_form").permitAll()
-                //TODO make page instead 403
                 .antMatchers("/bookCatalog/**").hasAnyAuthority("ADMIN", "USER")
                 .antMatchers("/user/userAccount").hasAnyAuthority("LIBRARIAN", "USER")
                 .antMatchers("/user/**").hasAnyAuthority("USER")

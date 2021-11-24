@@ -21,8 +21,7 @@ public class LibrarianService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userRepository.findAllByRole(RoleType.USER);
-        return users;
+        return userRepository.findAllByRole(RoleType.USER);
     }
 
     public User getUserById(long id) {

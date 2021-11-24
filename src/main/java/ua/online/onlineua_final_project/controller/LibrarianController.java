@@ -64,6 +64,7 @@ public class LibrarianController {
         return mav;
     }
 
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"seeUserAccount"})
     public ModelAndView seeUserAccount(Model model, @RequestParam("id") long id) {
         log.info("Try to see user account with id: {}", id);
@@ -90,6 +91,8 @@ public class LibrarianController {
         }
     }
 
+    //TODO make a redirect to librarianAccount from this method due to code duplication
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"giveOutTheBookToUserSubscription"})
     public ModelAndView giveOutTheBookToUserSubscription(Model model,
                                                          @RequestParam("userId") long userId,
@@ -128,6 +131,8 @@ public class LibrarianController {
         }
     }
 
+    //TODO make a redirect to librarianAccount from this method due to code duplication
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"giveOutTheBookToReadingRoom"})
     public ModelAndView giveOutTheBookToReadingRoom(Model model,
                                                     @RequestParam("userId") long userId,
@@ -163,6 +168,8 @@ public class LibrarianController {
         }
     }
 
+    //TODO make a redirect to librarian/librarianAccount due to code duplication
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"rejectTheOrder"})
     public ModelAndView rejectTheOrder(Model model,
                                        @RequestParam("userId") long userId,
@@ -202,6 +209,8 @@ public class LibrarianController {
         }
     }
 
+    //TODO make a redirect to librarian/userAccount due to code duplication
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"returnUserBookFromSubscription"})
     public ModelAndView returnUserBookFromSubscription(Model model,
                                                        @RequestParam("userId") long userId,
@@ -237,6 +246,8 @@ public class LibrarianController {
         }
     }
 
+    //TODO make a redirect to librarian/userAccount due to code duplication
+    //TODO delete unnecessary argument(s)
     @GetMapping(value = {"returnUserBookFromReadingRoom"})
     public ModelAndView returnUserBookFromReadingRoom(Model model,
                                                       @RequestParam("userId") long userId,

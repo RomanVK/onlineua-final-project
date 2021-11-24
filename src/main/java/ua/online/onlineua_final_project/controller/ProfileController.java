@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("profile")
+//TODO delete class
 public class ProfileController {
 
 }

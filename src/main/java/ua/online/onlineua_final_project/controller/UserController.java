@@ -70,6 +70,8 @@ public class UserController {
         }
     }
 
+    //TODO make redirect to bookCatalog/page/{} due to code duplication
+    //TODO add an arguments for saving data about a pagination and a searching
     @GetMapping(value = {"orderBook"})
     public ModelAndView orderBook(Model model, @RequestParam("bookId") long bookId) {
         log.info("Try to order book with id: {}", bookId);
@@ -104,6 +106,7 @@ public class UserController {
         }
     }
 
+    //TODO make redirect to user/userAccount due to code duplication
     @GetMapping(value = {"payPenalty"})
     public ModelAndView payPenalty(@RequestParam("bookId") long bookId) {
         ModelAndView mav = new ModelAndView("user/userAccount");

@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/public")
+//TODO delete class
 public class PublicRestApiController {
     private UserRepository userRepository;
 

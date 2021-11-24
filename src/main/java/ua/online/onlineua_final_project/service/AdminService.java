@@ -12,6 +12,7 @@ import ua.online.onlineua_final_project.repository.UserRepository;
 import ua.online.onlineua_final_project.web.error.NoEntityException;
 import ua.online.onlineua_final_project.web.error.UserAlreadyExistException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -54,6 +55,7 @@ public class AdminService {
                 .build());
     }
 
+    @Transactional
     public void lockUser(long id) {
         User lockUser = userRepository.findById(id).
                 orElseThrow(() -> new NoEntityException("There is no user with id:" + id));
@@ -61,6 +63,7 @@ public class AdminService {
         userRepository.save(lockUser);
     }
 
+    @Transactional
     public void unlockUser(long id) {
         User unlockUser = userRepository.findById(id).
                 orElseThrow(() -> new NoEntityException("There is no user with id:" + id));

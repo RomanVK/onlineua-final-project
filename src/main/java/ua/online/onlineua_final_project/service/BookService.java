@@ -129,6 +129,7 @@ public class BookService {
         return getBookById(bookId);
     }
 
+    //TODO make separate method for a duplication code
     @Transactional
     public void giveOutBookToTheSubscription(Long bookId, Long userId) {
         Book giveOutBook = getBookById(bookId);
@@ -161,6 +162,7 @@ public class BookService {
 
     }
 
+    //TODO make separate method for a duplication code
     @Transactional
     public Book giveOutTheBookToTheReadingRoom(Long bookId, Long userId) {
         Book giveOutBook = getBookById(bookId);
