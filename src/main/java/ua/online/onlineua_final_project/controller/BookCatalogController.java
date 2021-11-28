@@ -84,7 +84,7 @@ public class BookCatalogController {
         } catch (Exception ex) {
             log.info("Somethings went wrong. Message: {}", ex.getMessage());
             model.addAttribute("message", "Somethings went wrong. Message: " + ex.getMessage());
-            return "error";
+            return "foo";
         }
     }
 

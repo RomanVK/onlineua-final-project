@@ -2,6 +2,7 @@ package ua.online.onlineua_final_project.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import ua.online.onlineua_final_project.dto.BookDTO;
 import ua.online.onlineua_final_project.dto.NoteDTO;
 import ua.online.onlineua_final_project.entity.Book;
@@ -66,25 +69,26 @@ public class AdminController {
         return "admin/librariansList";
     }
 
-    //TODO make redirect to admin/librarianList due to code duplication
+
+    //took from https://javastudy.ru/spring-mvc/spring-mvc-pattern-prg-postredirectget/
     @GetMapping(value = {"deleteLibrarian"})
-    public ModelAndView deleteLibrarian(Model model, @RequestParam("id") long id) {
+    public ModelAndView deleteLibrarian(@RequestParam("id") long id, RedirectAttributes redirectAttributes) {
         log.info("Deleting librarian account with id: {}", id);
-        ModelAndView mav;
+        ModelAndView mav = new ModelAndView();
+        RedirectView redirectView = new RedirectView("librariansList");
+        redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+        mav.setView(redirectView);
         try {
             adminService.deleteLibrarian(id);
             log.info("Librarian with id {} was deleted", id);
-            mav = new ModelAndView("admin/librariansList");
-            mav.addObject("message", "Librarian with id " + id + " was deleted");
-            List<User> librarians = adminService.getAllLibrarians();
-            mav.addObject("librarians", librarians);
-            return mav;
+            redirectAttributes.addFlashAttribute("message", "Librarian with id " + id + " was deleted");
         } catch (Exception ex) {
-            log.info("Something went a wrong way. Librarian with id {} wasn't deleted", id);
-            mav = new ModelAndView("admin/librariansList");
-            mav.addObject("message", "Something went a wrong way. Librarian with id " + id + " wasn't deleted");
-            return mav;
+            log.info("Something went a wrong way. Librarian with id {} wasn't deleted cause: {}", id, ex.getMessage());
+            redirectAttributes.addFlashAttribute("message",
+                    "Something went a wrong way. Librarian with id " + id + " wasn't deleted cause: "
+                            + ex.getMessage());
         }
+        return mav;
     }
 
     @GetMapping(value = {"showCreateLibrarian"})
@@ -93,7 +97,7 @@ public class AdminController {
         return "admin/showCreateLibrarian";
     }
 
-    //TODO make redirect to admin/librarianList due to code duplication
+    //TODO make redirect to admin/librarianList due to code duplication and to implement the PRG pattern
     @PostMapping(value = {"createLibrarian"})
     public ModelAndView createLibrarian(@ModelAttribute("librarian") @Valid NoteDTO note,
                                         HttpServletRequest request, Errors errors, Model model) {
@@ -115,7 +119,7 @@ public class AdminController {
         }
     }
 
-    //TODO make redirect to librarian/userList due to code duplication
+    //TODO make redirect to librarian/userList due to code duplication and to implement the PRG pattern
     @GetMapping(value = "lockUserAccount")
     public ModelAndView lockUser(Model model, @RequestParam("id") long id) {
         log.info("Try to lock user account with id: {}", id);
@@ -136,7 +140,7 @@ public class AdminController {
         }
     }
 
-    //TODO make redirect to librarian/userList due to code duplication
+    //TODO make redirect to librarian/userList due to code duplication  and to implement the PRG pattern
     @GetMapping(value = "unlockUserAccount")
     public ModelAndView unlockUser(@RequestParam("id") long id) {
         log.info("Try to unlock user account with id: {}", id);

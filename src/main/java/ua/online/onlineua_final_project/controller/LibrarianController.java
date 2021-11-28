@@ -91,7 +91,7 @@ public class LibrarianController {
         }
     }
 
-    //TODO make a redirect to librarianAccount from this method due to code duplication
+    //TODO make a redirect to librarianAccount from this method due to code duplication and to implement the PRG pattern
     //TODO delete unnecessary argument(s)
     @GetMapping(value = {"giveOutTheBookToUserSubscription"})
     public ModelAndView giveOutTheBookToUserSubscription(Model model,
@@ -131,7 +131,7 @@ public class LibrarianController {
         }
     }
 
-    //TODO make a redirect to librarianAccount from this method due to code duplication
+    //TODO make a redirect to librarianAccount from this method due to code duplication and to implement the PRG pattern
     //TODO delete unnecessary argument(s)
     @GetMapping(value = {"giveOutTheBookToReadingRoom"})
     public ModelAndView giveOutTheBookToReadingRoom(Model model,
@@ -168,7 +168,7 @@ public class LibrarianController {
         }
     }
 
-    //TODO make a redirect to librarian/librarianAccount due to code duplication
+    //TODO make a redirect to librarian/librarianAccount due to code duplication and to implement the PRG pattern
     //TODO delete unnecessary argument(s)
     @GetMapping(value = {"rejectTheOrder"})
     public ModelAndView rejectTheOrder(Model model,
@@ -209,7 +209,7 @@ public class LibrarianController {
         }
     }
 
-    //TODO make a redirect to librarian/userAccount due to code duplication
+    //TODO make a redirect to librarian/userAccount due to code duplication and to implement the PRG pattern
     //TODO delete unnecessary argument(s)
     @GetMapping(value = {"returnUserBookFromSubscription"})
     public ModelAndView returnUserBookFromSubscription(Model model,
@@ -246,7 +246,7 @@ public class LibrarianController {
         }
     }
 
-    //TODO make a redirect to librarian/userAccount due to code duplication
+    //TODO make a redirect to librarian/userAccount due to code duplication and to implement the PRG pattern
     //TODO delete unnecessary argument(s)
     @GetMapping(value = {"returnUserBookFromReadingRoom"})
     public ModelAndView returnUserBookFromReadingRoom(Model model,
